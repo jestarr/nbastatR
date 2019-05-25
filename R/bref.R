@@ -1413,6 +1413,7 @@ bref_players_stats <-
     if (length(seasons) == 0) {
       stop("Enter season(s)")
     }
+    # Take Tables Argument and Make into lowercase
     tables <-
       tables %>% str_replace_all("\\ ", "_") %>% str_to_lower()
 
