@@ -1157,9 +1157,9 @@ all_nba_teams <-
     page <-
       url %>%
       read_html()
-
+    # Creates df that has columns: scheme (http), hostname(www.basketball-reference.com), and path(leagues/NBA_1997_per_game.htm)
     url_df <- url %>% httr::parse_url() %>% flatten_df()
-
+    # Returns "1997_per_game"
     url_path <-
       url_df$path %>% str_replace_all(".html|leagues/NBA_", '')
 
@@ -1178,22 +1178,24 @@ all_nba_teams <-
     id_season <-
       list(year_season_end - 1, '-', year_season_end %>% str_sub(3, 4)) %>%
       purrr::reduce(paste0)
-
+    # Character Vector of Player Names
     players <-
       page %>%
       html_nodes('th+ .left a') %>%
       html_text()
-
+    # Gets Player ID's Ex. "a/abdulma02.html"
     player_id <-
       page %>%
       html_nodes('th+ .left a') %>%
       html_attr('href') %>%
+      # "/players/a/abdulma02.html"
       str_replace_all('/players/', '')
 
     player_ids <-
       player_id %>%
       map_chr(function(x) {
         x %>%
+          # Get Player ID's and Remove .html. Ex. "a/abdulma02"
           str_replace_all('.html', '') %>%
           str_split('/') %>%
           flatten_chr() %>%
