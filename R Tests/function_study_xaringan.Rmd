@@ -1,0 +1,112 @@
+---
+title: "Function Study on NBA Stat R"
+subtitle: "⚔<br/>with xaringan"
+author: "Jonathan Starr"
+institute: "RStudio, Inc."
+date: "2019/06/06 (updated: `r Sys.Date()`)"
+output:
+  xaringan::moon_reader:
+    lib_dir: libs
+    nature:
+      highlightStyle: github
+      highlightLines: true
+      countIncrementalSlides: false
+---
+
+background-image: url(https://upload.wikimedia.org/wikipedia/commons/b/be/Sharingan_triple.svg)
+
+```{r setup, include=FALSE}
+options(htmltools.dir.version = FALSE)
+
+library(tidyverse)
+library(nbastatR)
+library(here)
+library(rvest)
+library(furrr)
+library(magrittr)
+
+source(here::here("R Tests", "functions_testing.R"))
+```
+
+# Basketball Reference Functions
+
+## Basketball Reference Player Season Tables
+
+---
+```{r}
+url <-
+  "http://www.basketball-reference.com/leagues/NBA_1997_per_game.html"
+return_message = TRUE
+
+ page <-
+      url %>%
+      read_html()
+# Creates df that has columns: scheme (http), 
+# hostname(www.basketball-reference.com), and path(leagues/NBA_1997_per_game.htm)
+    url_df <- url %>% httr::parse_url() %>% flatten_df()
+    # Returns "1997_per_game"
+    url_path <-
+      url_df$path %>% str_replace_all(".html|leagues/NBA_", '')
+    
+
+```
+---
+
+```{r, warning=FALSE}
+
+    year_season_end <-
+      url_path %>% str_split('\\_') %>% flatten_chr() %>% .[[1]] %>% as.character() %>% readr::parse_number()
+
+ 
+year_season_end
+
+# Used in typeData column
+   name_slug <-
+      url_path %>%
+      map_chr(function(x) {
+        parts <-
+          x %>% str_split('\\_') %>% flatten_chr()
+
+        parts[2:length(parts)] %>% str_to_title() %>% str_c(collapse = '')
+      })
+
+name_slug
+
+# used in slugSeason column
+    id_season <-
+      list(year_season_end - 1, '-', year_season_end %>% str_sub(3, 4)) %>%
+      purrr::reduce(paste0)
+    
+id_season
+
+    # Character Vector of Player Names
+    players <-
+      page %>%
+      html_nodes('th+ .left a') %>%
+      html_text() 
+    head(players, 5)
+
+    
+    # Gets Player ID's Ex. "a/abdulma02.html"
+    player_id <-
+      page %>%
+      html_nodes('th+ .left a') %>%
+      html_attr('href') %>%
+      # "/players/a/abdulma02.html"
+      str_replace_all('/players/', '')
+    head(player_id, 5)
+    
+    player_ids <-
+      player_id %>%
+      map_chr(function(x) {
+        x %>%
+          # Get Player ID's and Remove .html. Ex. "a/abdulma02"
+          str_replace_all('.html', '') %>%
+          str_split('/') %>%
+          flatten_chr() %>%
+          .[[2]]
+      })
+    head(player_ids, 5)
+    ```
+---
+    
