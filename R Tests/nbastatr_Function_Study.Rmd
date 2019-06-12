@@ -7,6 +7,7 @@ output:
     theme: flatly
     toc: yes
     toc_float: yes
+    toc_depth : 5
   pdf_document: default
 ---
 
@@ -708,4 +709,516 @@ head(df,5)
 # Column Names getting pulled back into .get_data_bref
 colnames(df)
 ```
+
+#### Assign Bref Data
+##### Full Function
+```{r}
+#' Assign nested BREF data to environment
+#'
+#' @param data a \code{tibble} of tables
+#' @param type type of BREF data are `teams` and `players`
+#' @param widen_data if \code{TRUE} widens data
+#' @param join_data if \code{TRUE} joins tables
+#' @param nest_data if \code{TRUE} nests data
+#' @param assign_to_environment if \code{TRUE} assigns data to your environment
+#' @param include_all_nba if `TRUE` include all NBA teams
+#'
+#' @return a `tibble`
+#' @export
+#' @import dplyr purrr stringr tibble tidyr
+#' @examples
+assign_bref_data <-
+  memoise::memoise(function(data,
+           type = "Players",
+           widen_data = TRUE,
+           include_all_nba = F,
+           join_data = TRUE,
+           nest_data = FALSE,
+           assign_to_environment = TRUE) {
+    type_slug <-
+      type %>% str_to_lower()
+
+    if (!type_slug %in% c('players', 'teams')) {
+      stop("Type can only be players or teams")
+    }
+
+    if (type_slug == "players") {
+      data <-
+        .assign.bref.players(
+          all_data = data,
+          widen_data = widen_data,
+          join_data = join_data,
+          include_all_nba = include_all_nba,
+          assign_to_environment = assign_to_environment
+        )
+    }
+
+    if (type_slug == "teams") {
+      data <-
+        .assign.bref.teams(
+          all_data = data,
+          widen_data = widen_data,
+          join_data = join_data,
+          assign_to_environment = assign_to_environment
+        )
+    }
+
+    if (nest_data) {
+      if (data %>% tibble::has_name("slugSeason")) {
+        data <-
+          data %>%
+          mutate(typeBREFData = type) %>%
+          nest(-c(slugSeason, typeBREFData, yearSeason), .key = dataSeason)
+      }
+    }
+    data
+  })
+
+```
+
+##### Function Breakdown
+```{r}
+# Arguments
+type = "Players"
+include_all_nba <- F
+only_totals <- TRUE
+assign_to_environment <- TRUE
+widen_data <- TRUE
+join_data <- TRUE
+
+
+ type_slug <-
+      type %>% str_to_lower()
+
+    if (!type_slug %in% c('players', 'teams')) {
+      stop("Type can only be players or teams")
+    }
+
+    if (type_slug == "players") {
+      data <-
+        .assign.bref.players(
+          all_data = all_data,
+          widen_data = widen_data,
+          join_data = join_data,
+          include_all_nba = include_all_nba,
+          assign_to_environment = assign_to_environment
+        )
+    }
+ 
+head(data,5)
+glimpse(data)
+
+# Check Nest Data
+nest_data = TRUE
+
+    if (nest_data) {
+      if (data %>% tibble::has_name("slugSeason")) {
+        data <-
+          data %>%
+          mutate(typeBREFData = type) %>%
+          nest(-c(slugSeason, typeBREFData, yearSeason), .key = dataSeason)
+      }
+    }
+glimpse(data)
+  
+
+```
+
+#### .Assign Bref Players
+##### Full Function
+```{r}
+.assign.bref.players <-
+  memoise::memoise(function(all_data,
+           widen_data = TRUE,
+           join_data = T,
+           include_all_nba = T,
+           assign_to_environment = TRUE) {
+    if (!all_data %>% tibble::has_name("typeData")) {
+      return(all_data)
+    }
+
+    table_names <-
+      all_data %>% pull(typeData) %>% unique()
+
+    all_data <-
+      table_names %>%
+      map_df(function(table) {
+        table %>% cat(fill = T)
+        df_table <-
+          all_data %>%
+          filter(typeData == table) %>%
+          unnest()
+
+        if (df_table %>% tibble::has_name("yearSeason")) {
+          df_table <-
+            df_table %>%
+            mutate(yearSeason = yearSeason - 1)
+        }
+
+        df_table <-
+          df_table %>%
+          .resolve.players(site = "bref")
+
+        if (!table == "Advanced") {
+          df_table <-
+            df_table %>%
+            gather_data(
+              numeric_ids = c(
+                "year",
+                "agePlayer",
+                "pct",
+                "countGames",
+                "ratio",
+                "idPlayer"
+              ),
+              use_logical_keys = TRUE,
+              use_factor_keys = T,
+              use_date_keys = F,
+              unite_columns = list(
+                new_column = "item",
+                column_1 = "item",
+                column_2 = "typeData",
+                sep = ""
+              )
+            )
+          col_order <-
+            c(names(df_table)[!names(df_table) %>% str_detect("value|item")], "item", "value")
+
+          df_table <-
+            df_table %>%
+            select(one_of(col_order))
+        } else {
+          df_table <-
+            df_table %>%
+            gather_data(
+              numeric_ids = c("year", "agePlayer", "countGames", "id"),
+              use_logical_keys = TRUE,
+              use_factor_keys = T,
+              use_date_keys = F,
+              unite_columns = NULL
+            )
+
+
+          col_order <-
+            c(names(df_table)[!names(df_table) %>% str_detect("value|item")], "item", "value")
+
+          df_table <-
+            df_table %>%
+            select(one_of(col_order))
+        }
+
+        df_table <-
+          df_table %>%
+          dplyr::select(-one_of("typeData")) %>%
+          suppressWarnings()
+
+        if (df_table %>% tibble::has_name("yearSeasonStart")) {
+          df_table <-
+            df_table %>%
+            rename(yearSeason = yearSeasonStart) %>%
+            mutate(yearSeason = yearSeason + 1)
+        }
+
+        if (widen_data) {
+          df_table <-
+            df_table %>%
+            spread_data(
+              variable_name = "item",
+              value_name = "value",
+              perserve_order = TRUE,
+              unite_columns = NULL,
+              separate_columns = NULL
+            )
+        }
+
+        if (df_table %>% tibble::has_name("minutesAdvanced")) {
+          df_table <-
+            df_table %>%
+            dplyr::rename(minutesTotals = minutesAdvanced)
+        }
+
+        if (assign_to_environment) {
+          table_name <-
+            glue::glue("dataBREFPlayer{table}")
+
+          assign(x = table_name,
+                 value = eval(df_table),
+                 envir = .GlobalEnv)
+        }
+        tibble(nameTable = table, dataTable = list(df_table))
+      }) %>%
+      suppressMessages()
+
+    if (join_data) {
+      if (widen_data) {
+        all_data <-
+          all_data %>%
+          select(dataTable) %>%
+          purrr::flatten() %>%
+          purrr::reduce(left_join) %>%
+          suppressMessages() %>%
+          dplyr::select(yearSeason,
+                        slugSeason,
+                        namePlayer,
+                        slugPosition,
+                        everything())
+      }  else {
+        all_data <-
+          all_data %>%
+          purrr::reduce(bind_rows) %>%
+          suppressMessages()
+
+        col_order <-
+          c(names(all_data)[!names(all_data) %>% str_detect("value|item")], "item", "value")
+
+        all_data <-
+          all_data %>%
+          select(one_of(col_order))
+      }
+
+      all_data <-
+        all_data %>%
+        mutate(
+          groupPosition = ifelse(
+            slugPosition %>% nchar() == 1,
+            slugPosition,
+            slugPosition %>% substr(2, 2)
+          ),
+          isHOFPlayer = ifelse(isHOFPlayer %>% is.na(), FALSE, isHOFPlayer)
+        ) %>%
+        mutate(groupPosition = ifelse(groupPosition == "-",
+                                      substr(slugPosition, 1, 1),
+                                      groupPosition)) %>%
+        dplyr::select(slugSeason:namePlayer, groupPosition, everything())
+
+      if (include_all_nba) {
+        df_all_nba <-
+          all_nba_teams(return_message = F)
+
+        all_data <-
+          all_data %>%
+          left_join(
+            df_all_nba %>%
+              dplyr::select(
+              slugPlayerSeason,
+              slugSeason,
+              groupAllNBA,
+              numberAllNBATeam,
+              isAllNBA:isAllNBA3
+            )
+          ) %>%
+          distinct() %>%
+          suppressMessages()
+
+        all_data <-
+          all_data %>%
+          tidyr::replace_na(
+            list(
+              numberAllNBATeam = 0,
+              isAllNBA = FALSE,
+              isAllNBA1 = FALSE,
+              isAllNBA2 = FALSE,
+              isAllNBA3 = FALSE
+            )
+          )
+
+        all_data <- all_data %>%
+          mutate(groupAllNBA = case_when(
+            is.na(groupAllNBA) & !isSeasonCurrent ~ "None",
+            is.na(groupAllNBA) & isSeasonCurrent ~ NA_character_,
+            TRUE ~ groupAllNBA
+          ))
+      }
+
+      all_data <-
+        all_data %>%
+        mutate(
+          urlPlayerBREF = list(
+            'http://www.basketball-reference.com/players/',
+            slugPlayerBREF %>% substr(start = 1, stop = 1),
+            '/',
+            slugPlayerBREF,
+            '.html'
+          ) %>% purrr::reduce(paste0)
+        )
+
+      all_data <-
+        all_data %>%
+        mutate_if(is.numeric,
+          list(function(x){ifelse(is.na(x), 0, x)}))
+    }
+    all_data
+  })
+
+```
+
+##### Function Breakdown
+
+###### First part of Nested Function
+
+```{r}
+# Use elements of base function to get all_data
+seasons <- 2018:2019
+tables <- c("advanced", "per_game")
+only_totals <- TRUE
+return_message <- TRUE
+
+
+widen_data <- TRUE
+join_data <- T
+include_all_nba <- T
+include_all_nba <- F
+assign_to_environment <- TRUE
+
+all_data <- readRDS("bref_all_data.rds")
+
+# First Part of Function
+# Get Table Names from Data
+table_names <-
+  all_data %>%
+  pull(typeData) %>%
+  unique()
+table_names
+
+# Unnest Data
+table = "PerGame"
+df_table <-
+  all_data %>%
+  filter(typeData == table) %>%
+  unnest()
+ glimpse(df_table)
+ 
+ # If DF Table has Year Season
+if (df_table %>% tibble::has_name("yearSeason")) {
+  df_table <-
+    df_table %>%
+    mutate(yearSeason = yearSeason - 1)
+}
+
+glimpse(df_table)
+
+df_table <-
+  df_table %>%
+  # Look into this separately
+  .resolve.players(site = "bref")
+
+glimpse(df_table)
+# Removing brackets of next if Statement.  Checking if Table is not advanced first, then advanced after
+
+# Save df_table for Advanced part of if statement
+df_table_2 <- df_table
+
+# Gather all columns Except numeric ID ones.  Item names get amended.  See below
+df_table <-
+  df_table %>%
+  gather_data(
+    numeric_ids = c(
+      "year",
+      "agePlayer",
+      "pct",
+      "countGames",
+      "ratio",
+      "idPlayer"
+    ),
+    use_logical_keys = TRUE,
+    use_factor_keys = T,
+    use_date_keys = F,
+    unite_columns = list(
+      new_column = "item",
+      column_1 = "item",
+      column_2 = "typeData",
+      sep = ""
+    )
+  )
+glimpse(df_table)
+colnames(df_table)
+
+df_table %>% count(item) %>% select(item)
+
+          # Col Order, place item, and value as last 2 columns based on columns in Character Vector
+col_order <-
+  c(names(df_table)[!names(df_table) %>% str_detect("value|item")], "item", "value")
+col_order
+
+df_table <-
+  df_table %>%
+  select(one_of(col_order))
+glimpse(df_table)
+
+# Advanced Portion of If
+df_table_adv <-
+  df_table_2 %>%
+  gather_data(
+    numeric_ids = c("year", "agePlayer", "countGames", "id"),
+    use_logical_keys = TRUE,
+    use_factor_keys = T,
+    use_date_keys = F,
+    unite_columns = NULL
+  )
+
+glimpse(df_table_adv)
+
+
+col_order_adv <-
+  c(names(df_table_adv)[!names(df_table_adv) %>% str_detect("value|item")], "item", "value")
+col_order_adv
+
+
+
+df_table_adv <-
+  df_table_adv %>%
+  select(one_of(col_order_adv))
+glimpse(df_table_adv)
+
+
+df_table <-
+  df_table %>%
+  dplyr::select(-one_of("typeData")) %>%
+  suppressWarnings()
+glimpse(df_table)
+
+# Does it have Year Season Start
+# df_table %>% tibble::has_name("yearSeasonStart")
+#   df_table <-
+#     df_table %>%
+#     rename(yearSeason = yearSeasonStart) %>%
+#     mutate(yearSeason = yearSeason + 1)
+
+
+# Widen Data? 
+widen_data <- TRUE
+if (widen_data) {
+  df_table <-
+    df_table %>%
+    spread_data(
+      variable_name = "item",
+      value_name = "value",
+      perserve_order = TRUE,
+      unite_columns = NULL,
+      separate_columns = NULL
+    )
+}
+glimpse(df_table)
+
+
+# df_table %>% tibble::has_name("minutesAdvanced")
+#   df_table <-
+#     df_table %>%
+#     dplyr::rename(minutesTotals = minutesAdvanced)
+
+
+assign_to_environment = TRUE 
+  table_name <-
+    glue::glue("dataBREFPlayer{table}")
+  table_name
+
+  assign(
+    x = table_name,
+    value = eval(df_table),
+    envir = .GlobalEnv
+  )
+
+
+```
+
 

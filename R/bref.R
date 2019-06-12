@@ -1444,10 +1444,6 @@ bref_players_stats <-
         assign_to_environment = assign_to_environment
       )
 
-    all_data <-
-      all_data %>%
-      mutate(yearSeason = slugSeason %>% substr(1, 4) %>% as.numeric() + 1)
-
     all_data
   }
 

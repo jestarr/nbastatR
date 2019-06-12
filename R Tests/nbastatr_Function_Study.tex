@@ -1,0 +1,2277 @@
+\documentclass[]{article}
+\usepackage{lmodern}
+\usepackage{amssymb,amsmath}
+\usepackage{ifxetex,ifluatex}
+\usepackage{fixltx2e} % provides \textsubscript
+\ifnum 0\ifxetex 1\fi\ifluatex 1\fi=0 % if pdftex
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+\else % if luatex or xelatex
+  \ifxetex
+    \usepackage{mathspec}
+  \else
+    \usepackage{fontspec}
+  \fi
+  \defaultfontfeatures{Ligatures=TeX,Scale=MatchLowercase}
+\fi
+% use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+% use microtype if available
+\IfFileExists{microtype.sty}{%
+\usepackage{microtype}
+\UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\usepackage[margin=1in]{geometry}
+\usepackage{hyperref}
+\hypersetup{unicode=true,
+            pdftitle={nbastatR Study},
+            pdfborder={0 0 0},
+            breaklinks=true}
+\urlstyle{same}  % don't use monospace font for urls
+\usepackage{color}
+\usepackage{fancyvrb}
+\newcommand{\VerbBar}{|}
+\newcommand{\VERB}{\Verb[commandchars=\\\{\}]}
+\DefineVerbatimEnvironment{Highlighting}{Verbatim}{commandchars=\\\{\}}
+% Add ',fontsize=\small' for more characters per line
+\usepackage{framed}
+\definecolor{shadecolor}{RGB}{248,248,248}
+\newenvironment{Shaded}{\begin{snugshade}}{\end{snugshade}}
+\newcommand{\KeywordTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\DataTypeTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{#1}}
+\newcommand{\DecValTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\BaseNTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\FloatTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\ConstantTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\CharTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\SpecialCharTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\StringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\VerbatimStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\SpecialStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\ImportTok}[1]{#1}
+\newcommand{\CommentTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\DocumentationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\AnnotationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\CommentVarTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\OtherTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{#1}}
+\newcommand{\FunctionTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\VariableTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\ControlFlowTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\OperatorTok}[1]{\textcolor[rgb]{0.81,0.36,0.00}{\textbf{#1}}}
+\newcommand{\BuiltInTok}[1]{#1}
+\newcommand{\ExtensionTok}[1]{#1}
+\newcommand{\PreprocessorTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\AttributeTok}[1]{\textcolor[rgb]{0.77,0.63,0.00}{#1}}
+\newcommand{\RegionMarkerTok}[1]{#1}
+\newcommand{\InformationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\WarningTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\AlertTok}[1]{\textcolor[rgb]{0.94,0.16,0.16}{#1}}
+\newcommand{\ErrorTok}[1]{\textcolor[rgb]{0.64,0.00,0.00}{\textbf{#1}}}
+\newcommand{\NormalTok}[1]{#1}
+\usepackage{graphicx,grffile}
+\makeatletter
+\def\maxwidth{\ifdim\Gin@nat@width>\linewidth\linewidth\else\Gin@nat@width\fi}
+\def\maxheight{\ifdim\Gin@nat@height>\textheight\textheight\else\Gin@nat@height\fi}
+\makeatother
+% Scale images if necessary, so that they will not overflow the page
+% margins by default, and it is still possible to overwrite the defaults
+% using explicit options in \includegraphics[width, height, ...]{}
+\setkeys{Gin}{width=\maxwidth,height=\maxheight,keepaspectratio}
+\IfFileExists{parskip.sty}{%
+\usepackage{parskip}
+}{% else
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{6pt plus 2pt minus 1pt}
+}
+\setlength{\emergencystretch}{3em}  % prevent overfull lines
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\setcounter{secnumdepth}{0}
+% Redefines (sub)paragraphs to behave more like sections
+\ifx\paragraph\undefined\else
+\let\oldparagraph\paragraph
+\renewcommand{\paragraph}[1]{\oldparagraph{#1}\mbox{}}
+\fi
+\ifx\subparagraph\undefined\else
+\let\oldsubparagraph\subparagraph
+\renewcommand{\subparagraph}[1]{\oldsubparagraph{#1}\mbox{}}
+\fi
+
+%%% Use protect on footnotes to avoid problems with footnotes in titles
+\let\rmarkdownfootnote\footnote%
+\def\footnote{\protect\rmarkdownfootnote}
+
+%%% Change title format to be more compact
+\usepackage{titling}
+
+% Create subtitle command for use in maketitle
+\providecommand{\subtitle}[1]{
+  \posttitle{
+    \begin{center}\large#1\end{center}
+    }
+}
+
+\setlength{\droptitle}{-2em}
+
+  \title{nbastatR Study}
+    \pretitle{\vspace{\droptitle}\centering\huge}
+  \posttitle{\par}
+    \author{}
+    \preauthor{}\postauthor{}
+    \date{}
+    \predate{}\postdate{}
+  
+
+\begin{document}
+\maketitle
+
+\section{Basketball Reference
+Functions}\label{basketball-reference-functions}
+
+\subsection{Basketball Reference Player Season
+Tables}\label{basketball-reference-player-season-tables}
+
+\subsubsection{Main Function}\label{main-function}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{# Overall Function}
+\NormalTok{bref_players_stats <-}
+\StringTok{  }\ControlFlowTok{function}\NormalTok{(}\DataTypeTok{seasons =} \OtherTok{NULL}\NormalTok{,}
+             \DataTypeTok{tables =} \KeywordTok{c}\NormalTok{(}\StringTok{"advanced"}\NormalTok{, }\StringTok{"totals"}\NormalTok{),}
+             \DataTypeTok{include_all_nba =}\NormalTok{ F,}
+             \DataTypeTok{only_totals =} \OtherTok{TRUE}\NormalTok{,}
+             \DataTypeTok{nest_data =} \OtherTok{FALSE}\NormalTok{,}
+             \DataTypeTok{assign_to_environment =} \OtherTok{TRUE}\NormalTok{,}
+             \DataTypeTok{widen_data =} \OtherTok{TRUE}\NormalTok{,}
+             \DataTypeTok{join_data =} \OtherTok{TRUE}\NormalTok{,}
+             \DataTypeTok{return_message =} \OtherTok{TRUE}\NormalTok{) \{}
+    \ControlFlowTok{if}\NormalTok{ (}\KeywordTok{length}\NormalTok{(seasons) }\OperatorTok{==}\StringTok{ }\DecValTok{0}\NormalTok{) \{}
+      \KeywordTok{stop}\NormalTok{(}\StringTok{"Enter season(s)"}\NormalTok{)}
+\NormalTok{    \}}
+    \CommentTok{# Take Tables Argument and Make into lowercase}
+\NormalTok{    tables <-}
+\StringTok{      }\NormalTok{tables }\OperatorTok{%>%}
+\StringTok{      }\KeywordTok{str_replace_all}\NormalTok{(}\StringTok{"}\CharTok{\textbackslash{}\textbackslash{}}\StringTok{ "}\NormalTok{, }\StringTok{"_"}\NormalTok{) }\OperatorTok{%>%}
+\StringTok{      }\KeywordTok{str_to_lower}\NormalTok{()}
+
+\NormalTok{    .get_data_bref_player_seasons_safe <-}
+\StringTok{      }\NormalTok{purrr}\OperatorTok{::}\KeywordTok{possibly}\NormalTok{(.get_data_bref_player_seasons, }\KeywordTok{tibble}\NormalTok{())}
+
+\NormalTok{    all_data <-}
+\StringTok{      }\NormalTok{tables }\OperatorTok{%>%}
+\StringTok{      }\KeywordTok{map_df}\NormalTok{(}\ControlFlowTok{function}\NormalTok{(x) \{}
+        \KeywordTok{.get_data_bref_player_seasons_safe}\NormalTok{(}
+          \DataTypeTok{table =}\NormalTok{ x,}
+          \DataTypeTok{seasons =}\NormalTok{ seasons,}
+          \DataTypeTok{only_totals =}\NormalTok{ only_totals,}
+          \DataTypeTok{return_message =}\NormalTok{ return_message}
+\NormalTok{        )}
+\NormalTok{      \})}
+
+\NormalTok{    all_data <-}
+\StringTok{      }\KeywordTok{assign_bref_data}\NormalTok{(}
+        \DataTypeTok{data =}\NormalTok{ all_data,}
+        \DataTypeTok{type =} \StringTok{"Players"}\NormalTok{,}
+        \DataTypeTok{widen_data =}\NormalTok{ widen_data,}
+        \DataTypeTok{include_all_nba =}\NormalTok{ include_all_nba,}
+        \DataTypeTok{join_data =}\NormalTok{ join_data,}
+        \DataTypeTok{nest_data =}\NormalTok{ nest_data,}
+        \DataTypeTok{assign_to_environment =}\NormalTok{ assign_to_environment}
+\NormalTok{      )}
+
+\NormalTok{    all_data <-}
+\StringTok{      }\NormalTok{all_data }\OperatorTok{%>%}
+\StringTok{      }\KeywordTok{mutate}\NormalTok{(}\DataTypeTok{yearSeason =}\NormalTok{ slugSeason }\OperatorTok{%>%}\StringTok{ }\KeywordTok{substr}\NormalTok{(}\DecValTok{1}\NormalTok{, }\DecValTok{4}\NormalTok{) }\OperatorTok{%>%}\StringTok{ }\KeywordTok{as.numeric}\NormalTok{() }\OperatorTok{+}\StringTok{ }\DecValTok{1}\NormalTok{)}
+
+\NormalTok{    all_data}
+\NormalTok{  \}}
+\end{Highlighting}
+\end{Shaded}
+
+Run Function to check output
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{bref_player_stats_table <-}
+\StringTok{  }\KeywordTok{bref_players_stats}\NormalTok{(}
+    \DataTypeTok{seasons =} \DecValTok{2018}\OperatorTok{:}\DecValTok{2019}\NormalTok{,}
+    \DataTypeTok{tables =} \KeywordTok{c}\NormalTok{(}\StringTok{"advanced"}\NormalTok{, }\StringTok{"per_game"}\NormalTok{),}
+    \DataTypeTok{include_all_nba =}\NormalTok{ F,}
+    \DataTypeTok{only_totals =} \OtherTok{TRUE}\NormalTok{,}
+    \DataTypeTok{nest_data =} \OtherTok{FALSE}\NormalTok{,}
+    \DataTypeTok{assign_to_environment =} \OtherTok{TRUE}\NormalTok{,}
+    \DataTypeTok{widen_data =} \OtherTok{TRUE}\NormalTok{,}
+    \DataTypeTok{join_data =} \OtherTok{TRUE}\NormalTok{,}
+    \DataTypeTok{return_message =} \OtherTok{TRUE}
+\NormalTok{  )}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## parsed http://www.basketball-reference.com/leagues/NBA_2018_advanced.html
+## parsed http://www.basketball-reference.com/leagues/NBA_2019_advanced.html
+## parsed http://www.basketball-reference.com/leagues/NBA_2018_per_game.html
+## parsed http://www.basketball-reference.com/leagues/NBA_2019_per_game.html
+## Advanced
+## Assigning NBA player dictionary to df_dict_nba_players to your environment
+## PerGame
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{bref_player_stats_table }\OperatorTok{%>%}\StringTok{ }\KeywordTok{head}\NormalTok{(}\DecValTok{5}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## # A tibble: 5 x 69
+##   slugSeason namePlayer groupPosition yearSeason slugPosition idPlayerNBA
+##   <chr>      <chr>      <chr>              <dbl> <chr>              <int>
+## 1 2017-18    Aaron Bro~ G                   2018 PG                201166
+## 2 2017-18    Aaron Gor~ F                   2018 PF                203932
+## 3 2018-19    Aaron Gor~ F                   2019 PF                203932
+## 4 2017-18    Aaron Har~ G                   2018 SG               1626151
+## 5 2018-19    Aaron Hol~ G                   2019 PG               1628988
+## # ... with 63 more variables: namePlayerBREF <chr>, slugPlayerBREF <chr>,
+## #   yearSeasonFirst <dbl>, urlPlayerThumbnail <chr>,
+## #   urlPlayerHeadshot <chr>, urlPlayerPhoto <chr>, urlPlayerStats <chr>,
+## #   urlPlayerActionPhoto <chr>, isSeasonCurrent <lgl>,
+## #   slugPlayerSeason <chr>, agePlayer <dbl>, slugTeamBREF <chr>,
+## #   countGames <dbl>, isHOFPlayer <lgl>, slugTeamsBREF <chr>,
+## #   minutes <dbl>, ratioPER <dbl>, pctTrueShooting <dbl>, pct3PRate <dbl>,
+## #   pctFTRate <dbl>, pctORB <dbl>, pctDRB <dbl>, pctTRB <dbl>,
+## #   pctAST <dbl>, pctSTL <dbl>, pctBLK <dbl>, pctTOV <dbl>, pctUSG <dbl>,
+## #   ratioOWS <dbl>, ratioDWS <dbl>, ratioWS <dbl>, ratioWSPer48 <dbl>,
+## #   ratioOBPM <dbl>, ratioDBPM <dbl>, ratioBPM <dbl>, ratioVORP <dbl>,
+## #   countTeamsPlayerSeason <dbl>, countGamesStarted <dbl>, pctFG <dbl>,
+## #   pctFG3 <dbl>, pctFG2 <dbl>, pctEFG <dbl>, pctFT <dbl>,
+## #   minutesPerGame <dbl>, fgmPerGame <dbl>, fgaPerGame <dbl>,
+## #   fg3mPerGame <dbl>, fg3aPerGame <dbl>, fg2mPerGame <dbl>,
+## #   fg2aPerGame <dbl>, ftmPerGame <dbl>, ftaPerGame <dbl>,
+## #   orbPerGame <dbl>, drbPerGame <dbl>, trbPerGame <dbl>,
+## #   astPerGame <dbl>, stlPerGame <dbl>, blkPerGame <dbl>,
+## #   tovPerGame <dbl>, pfPerGame <dbl>, ptsPerGame <dbl>,
+## #   countTeamsPlayerSeasonPerGame <dbl>, urlPlayerBREF <chr>
+\end{verbatim}
+
+\subsubsection{Component Breakdown of Main
+Function}\label{component-breakdown-of-main-function}
+
+-- User Custom Functions: - .get\_data\_bref\_player\_seasons
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{# Arguments:}
+\NormalTok{seasons <-}\StringTok{ }\DecValTok{2018}\OperatorTok{:}\DecValTok{2019}
+\NormalTok{tables <-}\StringTok{ }\KeywordTok{c}\NormalTok{(}\StringTok{"advanced"}\NormalTok{, }\StringTok{"per_game"}\NormalTok{)}
+\NormalTok{include_all_nba <-}\StringTok{ }\NormalTok{F}
+\NormalTok{only_totals <-}\StringTok{ }\OtherTok{TRUE}
+\NormalTok{nest_data <-}\StringTok{ }\OtherTok{FALSE}
+\NormalTok{assign_to_environment <-}\StringTok{ }\OtherTok{TRUE}
+\NormalTok{widen_data <-}\StringTok{ }\OtherTok{TRUE}
+\NormalTok{join_data <-}\StringTok{ }\OtherTok{TRUE}
+\NormalTok{return_message <-}\StringTok{ }\OtherTok{TRUE}
+
+
+\CommentTok{# Take Tables Argument and Make into lowercase}
+\NormalTok{tables <-}
+\StringTok{  }\NormalTok{tables }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{str_replace_all}\NormalTok{(}\StringTok{"}\CharTok{\textbackslash{}\textbackslash{}}\StringTok{ "}\NormalTok{, }\StringTok{"_"}\NormalTok{) }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{str_to_lower}\NormalTok{()}
+\NormalTok{tables}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] "advanced" "per_game"
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{.get_data_bref_player_seasons_safe <-}
+\StringTok{  }\NormalTok{purrr}\OperatorTok{::}\KeywordTok{possibly}\NormalTok{(.get_data_bref_player_seasons, }\KeywordTok{tibble}\NormalTok{())}
+
+\NormalTok{all_data <-}
+\StringTok{  }\NormalTok{tables }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{map_df}\NormalTok{(}\ControlFlowTok{function}\NormalTok{(x) \{}
+    \KeywordTok{.get_data_bref_player_seasons_safe}\NormalTok{(}
+      \DataTypeTok{table =}\NormalTok{ x,}
+      \DataTypeTok{seasons =}\NormalTok{ seasons,}
+      \DataTypeTok{only_totals =}\NormalTok{ only_totals,}
+      \DataTypeTok{return_message =}\NormalTok{ return_message}
+\NormalTok{    )}
+\NormalTok{  \})}
+\KeywordTok{head}\NormalTok{(all_data, }\DecValTok{5}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## # A tibble: 4 x 4
+##   typeData slugSeason yearSeason dataTable          
+##   <chr>    <chr>           <dbl> <list>             
+## 1 Advanced 2017-18          2018 <tibble [540 x 32]>
+## 2 Advanced 2018-19          2019 <tibble [530 x 32]>
+## 3 PerGame  2017-18          2018 <tibble [540 x 35]>
+## 4 PerGame  2018-19          2019 <tibble [530 x 35]>
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{# Look inside dataTable column}
+\NormalTok{preview <-}\StringTok{ }\NormalTok{all_data}\OperatorTok{$}\NormalTok{dataTable[[}\DecValTok{1}\NormalTok{]]}
+
+\KeywordTok{head}\NormalTok{(preview, }\DecValTok{5}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## # A tibble: 5 x 32
+##   isSeasonCurrent slugPlayerSeason slugPlayerBREF namePlayer slugPosition
+##   <lgl>           <chr>            <chr>          <chr>      <chr>       
+## 1 FALSE           abrinal01_2018   abrinal01      Alex Abri~ SG          
+## 2 FALSE           acyqu01_2018     acyqu01        Quincy Acy PF          
+## 3 FALSE           adamsst01_2018   adamsst01      Steven Ad~ C           
+## 4 FALSE           adebaba01_2018   adebaba01      Bam Adeba~ C           
+## 5 FALSE           afflaar01_2018   afflaar01      Arron Aff~ SG          
+## # ... with 27 more variables: agePlayer <dbl>, slugTeamBREF <chr>,
+## #   countGames <dbl>, minutes <dbl>, ratioPER <dbl>,
+## #   pctTrueShooting <dbl>, pct3PRate <dbl>, pctFTRate <dbl>, pctORB <dbl>,
+## #   pctDRB <dbl>, pctTRB <dbl>, pctAST <dbl>, pctSTL <dbl>, pctBLK <dbl>,
+## #   pctTOV <dbl>, pctUSG <dbl>, ratioOWS <dbl>, ratioDWS <dbl>,
+## #   ratioWS <dbl>, ratioWSPer48 <dbl>, ratioOBPM <dbl>, ratioDBPM <dbl>,
+## #   ratioBPM <dbl>, ratioVORP <dbl>, isHOFPlayer <lgl>,
+## #   slugTeamsBREF <chr>, countTeamsPlayerSeason <int>
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{all_data <-}
+\StringTok{  }\KeywordTok{assign_bref_data}\NormalTok{(}
+    \DataTypeTok{data =}\NormalTok{ all_data,}
+    \DataTypeTok{type =} \StringTok{"Players"}\NormalTok{,}
+    \DataTypeTok{widen_data =}\NormalTok{ widen_data,}
+    \DataTypeTok{include_all_nba =}\NormalTok{ include_all_nba,}
+    \DataTypeTok{join_data =}\NormalTok{ join_data,}
+    \DataTypeTok{nest_data =}\NormalTok{ nest_data,}
+    \DataTypeTok{assign_to_environment =}\NormalTok{ assign_to_environment}
+\NormalTok{  )}
+\KeywordTok{head}\NormalTok{(all_data, }\DecValTok{5}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## # A tibble: 5 x 69
+##   slugSeason namePlayer groupPosition yearSeason slugPosition idPlayerNBA
+##   <chr>      <chr>      <chr>              <dbl> <chr>              <int>
+## 1 2017-18    Aaron Bro~ G                   2017 PG                201166
+## 2 2017-18    Aaron Gor~ F                   2017 PF                203932
+## 3 2018-19    Aaron Gor~ F                   2018 PF                203932
+## 4 2017-18    Aaron Har~ G                   2017 SG               1626151
+## 5 2018-19    Aaron Hol~ G                   2018 PG               1628988
+## # ... with 63 more variables: namePlayerBREF <chr>, slugPlayerBREF <chr>,
+## #   yearSeasonFirst <dbl>, urlPlayerThumbnail <chr>,
+## #   urlPlayerHeadshot <chr>, urlPlayerPhoto <chr>, urlPlayerStats <chr>,
+## #   urlPlayerActionPhoto <chr>, isSeasonCurrent <lgl>,
+## #   slugPlayerSeason <chr>, agePlayer <dbl>, slugTeamBREF <chr>,
+## #   countGames <dbl>, isHOFPlayer <lgl>, slugTeamsBREF <chr>,
+## #   minutes <dbl>, ratioPER <dbl>, pctTrueShooting <dbl>, pct3PRate <dbl>,
+## #   pctFTRate <dbl>, pctORB <dbl>, pctDRB <dbl>, pctTRB <dbl>,
+## #   pctAST <dbl>, pctSTL <dbl>, pctBLK <dbl>, pctTOV <dbl>, pctUSG <dbl>,
+## #   ratioOWS <dbl>, ratioDWS <dbl>, ratioWS <dbl>, ratioWSPer48 <dbl>,
+## #   ratioOBPM <dbl>, ratioDBPM <dbl>, ratioBPM <dbl>, ratioVORP <dbl>,
+## #   countTeamsPlayerSeason <dbl>, countGamesStarted <dbl>, pctFG <dbl>,
+## #   pctFG3 <dbl>, pctFG2 <dbl>, pctEFG <dbl>, pctFT <dbl>,
+## #   minutesPerGame <dbl>, fgmPerGame <dbl>, fgaPerGame <dbl>,
+## #   fg3mPerGame <dbl>, fg3aPerGame <dbl>, fg2mPerGame <dbl>,
+## #   fg2aPerGame <dbl>, ftmPerGame <dbl>, ftaPerGame <dbl>,
+## #   orbPerGame <dbl>, drbPerGame <dbl>, trbPerGame <dbl>,
+## #   astPerGame <dbl>, stlPerGame <dbl>, blkPerGame <dbl>,
+## #   tovPerGame <dbl>, pfPerGame <dbl>, ptsPerGame <dbl>,
+## #   countTeamsPlayerSeasonPerGame <dbl>, urlPlayerBREF <chr>
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{all_data <-}
+\StringTok{  }\NormalTok{all_data }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{mutate}\NormalTok{(}\DataTypeTok{yearSeason =}\NormalTok{ slugSeason }\OperatorTok{%>%}\StringTok{ }\KeywordTok{substr}\NormalTok{(}\DecValTok{1}\NormalTok{, }\DecValTok{4}\NormalTok{) }\OperatorTok{%>%}\StringTok{ }\KeywordTok{as.numeric}\NormalTok{() }\OperatorTok{+}\StringTok{ }\DecValTok{1}\NormalTok{)}
+
+\KeywordTok{head}\NormalTok{(all_data, }\DecValTok{5}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## # A tibble: 5 x 69
+##   slugSeason namePlayer groupPosition yearSeason slugPosition idPlayerNBA
+##   <chr>      <chr>      <chr>              <dbl> <chr>              <int>
+## 1 2017-18    Aaron Bro~ G                   2018 PG                201166
+## 2 2017-18    Aaron Gor~ F                   2018 PF                203932
+## 3 2018-19    Aaron Gor~ F                   2019 PF                203932
+## 4 2017-18    Aaron Har~ G                   2018 SG               1626151
+## 5 2018-19    Aaron Hol~ G                   2019 PG               1628988
+## # ... with 63 more variables: namePlayerBREF <chr>, slugPlayerBREF <chr>,
+## #   yearSeasonFirst <dbl>, urlPlayerThumbnail <chr>,
+## #   urlPlayerHeadshot <chr>, urlPlayerPhoto <chr>, urlPlayerStats <chr>,
+## #   urlPlayerActionPhoto <chr>, isSeasonCurrent <lgl>,
+## #   slugPlayerSeason <chr>, agePlayer <dbl>, slugTeamBREF <chr>,
+## #   countGames <dbl>, isHOFPlayer <lgl>, slugTeamsBREF <chr>,
+## #   minutes <dbl>, ratioPER <dbl>, pctTrueShooting <dbl>, pct3PRate <dbl>,
+## #   pctFTRate <dbl>, pctORB <dbl>, pctDRB <dbl>, pctTRB <dbl>,
+## #   pctAST <dbl>, pctSTL <dbl>, pctBLK <dbl>, pctTOV <dbl>, pctUSG <dbl>,
+## #   ratioOWS <dbl>, ratioDWS <dbl>, ratioWS <dbl>, ratioWSPer48 <dbl>,
+## #   ratioOBPM <dbl>, ratioDBPM <dbl>, ratioBPM <dbl>, ratioVORP <dbl>,
+## #   countTeamsPlayerSeason <dbl>, countGamesStarted <dbl>, pctFG <dbl>,
+## #   pctFG3 <dbl>, pctFG2 <dbl>, pctEFG <dbl>, pctFT <dbl>,
+## #   minutesPerGame <dbl>, fgmPerGame <dbl>, fgaPerGame <dbl>,
+## #   fg3mPerGame <dbl>, fg3aPerGame <dbl>, fg2mPerGame <dbl>,
+## #   fg2aPerGame <dbl>, ftmPerGame <dbl>, ftaPerGame <dbl>,
+## #   orbPerGame <dbl>, drbPerGame <dbl>, trbPerGame <dbl>,
+## #   astPerGame <dbl>, stlPerGame <dbl>, blkPerGame <dbl>,
+## #   tovPerGame <dbl>, pfPerGame <dbl>, ptsPerGame <dbl>,
+## #   countTeamsPlayerSeasonPerGame <dbl>, urlPlayerBREF <chr>
+\end{verbatim}
+
+\subsubsection{Internal Functions}\label{internal-functions}
+
+\paragraph{.get\_data\_bref\_player\_seasons}\label{get_data_bref_player_seasons}
+
+\subparagraph{Full Function}\label{full-function}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{.get_data_bref_player_seasons <-}
+\StringTok{  }\ControlFlowTok{function}\NormalTok{(}\DataTypeTok{seasons =} \DecValTok{2019}\NormalTok{,}
+             \DataTypeTok{table =} \StringTok{"advanced"}\NormalTok{,}
+             \DataTypeTok{only_totals =} \OtherTok{TRUE}\NormalTok{,}
+             \DataTypeTok{return_message =} \OtherTok{TRUE}\NormalTok{) \{}
+\NormalTok{    current_season <-}\StringTok{ }\KeywordTok{.get_current_season}\NormalTok{()}
+\NormalTok{    urls <-}
+\StringTok{      }\KeywordTok{.generate_years_urls}\NormalTok{(}\DataTypeTok{table =}\NormalTok{ table, }\DataTypeTok{seasons =}\NormalTok{ seasons)}
+\NormalTok{    .parse_player_season_safe <-}
+\StringTok{      }\NormalTok{purrr}\OperatorTok{::}\KeywordTok{possibly}\NormalTok{(.parse_player_season, }\KeywordTok{tibble}\NormalTok{())}
+
+\NormalTok{    all_data <-}
+\StringTok{      }\NormalTok{urls }\OperatorTok{%>%}
+\StringTok{      }\KeywordTok{map_df}\NormalTok{(}\ControlFlowTok{function}\NormalTok{(x) \{}
+        \KeywordTok{.parse_player_season_safe}\NormalTok{(}\DataTypeTok{url =}\NormalTok{ x, }\DataTypeTok{return_message =}\NormalTok{ return_message)}
+\NormalTok{      \})}
+
+\NormalTok{    all_data <-}
+\StringTok{      }\NormalTok{all_data }\OperatorTok{%>%}
+\StringTok{      }\NormalTok{dplyr}\OperatorTok{::}\KeywordTok{select}\NormalTok{(}\OperatorTok{-}\NormalTok{dplyr}\OperatorTok{::}\KeywordTok{matches}\NormalTok{(}\StringTok{"urlData"}\NormalTok{)) }\OperatorTok{%>%}
+\StringTok{      }\NormalTok{tidyr}\OperatorTok{::}\KeywordTok{unite}\NormalTok{(slugPlayerSeason, slugPlayerBREF, yearSeason, }\DataTypeTok{remove =}\NormalTok{ F)}
+
+\NormalTok{    all_data <-}
+\StringTok{      }\NormalTok{all_data }\OperatorTok{%>%}
+\StringTok{      }\KeywordTok{mutate}\NormalTok{(}\DataTypeTok{isSeasonCurrent =}\NormalTok{ slugSeason }\OperatorTok{==}\StringTok{ }\NormalTok{current_season) }\OperatorTok{%>%}
+\StringTok{      }\KeywordTok{select}\NormalTok{(typeData, slugSeason, isSeasonCurrent, }\KeywordTok{everything}\NormalTok{())}
+
+\NormalTok{    all_data <-}
+\StringTok{      }\NormalTok{all_data }\OperatorTok{%>%}
+\StringTok{      }\KeywordTok{mutate}\NormalTok{(}\DataTypeTok{yearSeason =}\NormalTok{ slugSeason }\OperatorTok{%>%}\StringTok{ }\KeywordTok{substr}\NormalTok{(}\DecValTok{1}\NormalTok{, }\DecValTok{4}\NormalTok{) }\OperatorTok{%>%}\StringTok{ }\KeywordTok{as.numeric}\NormalTok{() }\OperatorTok{+}\StringTok{ }\DecValTok{1}\NormalTok{)}
+
+\NormalTok{    all_data <-}
+\StringTok{      }\NormalTok{all_data }\OperatorTok{%>%}
+\StringTok{      }\KeywordTok{arrange}\NormalTok{(yearSeason)}
+
+\NormalTok{    df_players_teams <-}
+\StringTok{      }\NormalTok{all_data }\OperatorTok{%>%}
+\StringTok{      }\KeywordTok{filter}\NormalTok{(slugTeamBREF }\OperatorTok{!=}\StringTok{ "TOT"}\NormalTok{) }\OperatorTok{%>%}
+\StringTok{      }\KeywordTok{group_by}\NormalTok{(slugPlayerBREF, slugSeason) }\OperatorTok{%>%}
+\StringTok{      }\NormalTok{dplyr}\OperatorTok{::}\KeywordTok{summarise}\NormalTok{(}
+        \DataTypeTok{slugTeamsBREF =} \KeywordTok{str_c}\NormalTok{(slugTeamBREF, }\DataTypeTok{collapse =} \StringTok{" | "}\NormalTok{),}
+        \DataTypeTok{countTeamsPlayerSeason =} \KeywordTok{length}\NormalTok{(slugTeamsBREF)}
+\NormalTok{      ) }\OperatorTok{%>%}
+\StringTok{      }\KeywordTok{ungroup}\NormalTok{()}
+
+\NormalTok{    all_data <-}
+\StringTok{      }\NormalTok{all_data }\OperatorTok{%>%}
+\StringTok{      }\KeywordTok{left_join}\NormalTok{(df_players_teams, }\DataTypeTok{by =} \KeywordTok{c}\NormalTok{(}\StringTok{"slugSeason"}\NormalTok{, }\StringTok{"slugPlayerBREF"}\NormalTok{))}
+
+    \ControlFlowTok{if}\NormalTok{ (only_totals) \{}
+\NormalTok{      all_data <-}
+\StringTok{        }\NormalTok{all_data }\OperatorTok{%>%}
+\StringTok{        }\KeywordTok{group_by}\NormalTok{(yearSeason, slugPlayerBREF) }\OperatorTok{%>%}
+\StringTok{        }\KeywordTok{filter}\NormalTok{(countGames }\OperatorTok{==}\StringTok{ }\KeywordTok{max}\NormalTok{(countGames)) }\OperatorTok{%>%}
+\StringTok{        }\KeywordTok{ungroup}\NormalTok{()}
+\NormalTok{    \}}
+    \KeywordTok{gc}\NormalTok{()}
+
+\NormalTok{    all_data <-}
+\StringTok{      }\NormalTok{all_data }\OperatorTok{%>%}
+\StringTok{      }\KeywordTok{nest}\NormalTok{(}\OperatorTok{-}\KeywordTok{c}\NormalTok{(typeData, slugSeason, yearSeason), }\DataTypeTok{.key =}\NormalTok{ dataTable)}
+\NormalTok{    all_data}
+\NormalTok{  \}}
+\end{Highlighting}
+\end{Shaded}
+
+\subparagraph{Function Breakdown}\label{function-breakdown}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{# Arguments}
+\NormalTok{seasons <-}\StringTok{ }\DecValTok{2018}\OperatorTok{:}\DecValTok{2019}
+\NormalTok{table <-}\StringTok{ "per_game"}
+\NormalTok{only_totals <-}\StringTok{ }\OtherTok{TRUE}
+\NormalTok{return_message <-}\StringTok{ }\OtherTok{TRUE}
+
+\NormalTok{current_season <-}\StringTok{ }\KeywordTok{.get_current_season}\NormalTok{()}
+\NormalTok{current_season}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] "2019-20"
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{urls <-}
+\StringTok{  }\KeywordTok{.generate_years_urls}\NormalTok{(}\DataTypeTok{table =}\NormalTok{ table, }\DataTypeTok{seasons =}\NormalTok{ seasons)}
+\NormalTok{urls}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] "http://www.basketball-reference.com/leagues/NBA_2018_per_game.html"
+## [2] "http://www.basketball-reference.com/leagues/NBA_2019_per_game.html"
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{.parse_player_season_safe <-}
+\StringTok{  }\NormalTok{purrr}\OperatorTok{::}\KeywordTok{possibly}\NormalTok{(.parse_player_season, }\KeywordTok{tibble}\NormalTok{())}
+
+\NormalTok{all_data <-}
+\StringTok{  }\NormalTok{urls }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{map_df}\NormalTok{(}\ControlFlowTok{function}\NormalTok{(x) \{}
+    \KeywordTok{.parse_player_season_safe}\NormalTok{(}\DataTypeTok{url =}\NormalTok{ x, }\DataTypeTok{return_message =}\NormalTok{ return_message)}
+\NormalTok{  \})}
+\KeywordTok{head}\NormalTok{(all_data, }\DecValTok{5}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## # A tibble: 5 x 35
+##   typeData slugSeason yearSeason slugPlayerBREF namePlayer slugPosition
+##   <chr>    <chr>           <dbl> <chr>          <chr>      <chr>       
+## 1 PerGame  2017-18          2018 abrinal01      Alex Abri~ SG          
+## 2 PerGame  2017-18          2018 acyqu01        Quincy Acy PF          
+## 3 PerGame  2017-18          2018 adamsst01      Steven Ad~ C           
+## 4 PerGame  2017-18          2018 adebaba01      Bam Adeba~ C           
+## 5 PerGame  2017-18          2018 afflaar01      Arron Aff~ SG          
+## # ... with 29 more variables: agePlayer <dbl>, slugTeamBREF <chr>,
+## #   countGames <dbl>, countGamesStarted <dbl>, minutes <dbl>, fgm <dbl>,
+## #   fga <dbl>, pctFG <dbl>, fg3m <dbl>, fg3a <dbl>, pctFG3 <dbl>,
+## #   fg2m <dbl>, fg2a <dbl>, pctFG2 <dbl>, pctEFG <dbl>, ftm <dbl>,
+## #   fta <dbl>, pctFT <dbl>, orb <dbl>, drb <dbl>, trb <dbl>, ast <dbl>,
+## #   stl <dbl>, blk <dbl>, tov <dbl>, pf <dbl>, pts <dbl>,
+## #   isHOFPlayer <lgl>, urlData <chr>
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{all_data <-}
+\StringTok{  }\NormalTok{all_data }\OperatorTok{%>%}
+\StringTok{  }\NormalTok{dplyr}\OperatorTok{::}\KeywordTok{select}\NormalTok{(}\OperatorTok{-}\NormalTok{dplyr}\OperatorTok{::}\KeywordTok{matches}\NormalTok{(}\StringTok{"urlData"}\NormalTok{)) }\OperatorTok{%>%}
+\StringTok{  }\NormalTok{tidyr}\OperatorTok{::}\KeywordTok{unite}\NormalTok{(slugPlayerSeason, slugPlayerBREF, yearSeason, }\DataTypeTok{remove =}\NormalTok{ F)}
+\KeywordTok{head}\NormalTok{(all_data, }\DecValTok{5}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## # A tibble: 5 x 35
+##   typeData slugSeason slugPlayerSeason yearSeason slugPlayerBREF namePlayer
+##   <chr>    <chr>      <chr>                 <dbl> <chr>          <chr>     
+## 1 PerGame  2017-18    abrinal01_2018         2018 abrinal01      Alex Abri~
+## 2 PerGame  2017-18    acyqu01_2018           2018 acyqu01        Quincy Acy
+## 3 PerGame  2017-18    adamsst01_2018         2018 adamsst01      Steven Ad~
+## 4 PerGame  2017-18    adebaba01_2018         2018 adebaba01      Bam Adeba~
+## 5 PerGame  2017-18    afflaar01_2018         2018 afflaar01      Arron Aff~
+## # ... with 29 more variables: slugPosition <chr>, agePlayer <dbl>,
+## #   slugTeamBREF <chr>, countGames <dbl>, countGamesStarted <dbl>,
+## #   minutes <dbl>, fgm <dbl>, fga <dbl>, pctFG <dbl>, fg3m <dbl>,
+## #   fg3a <dbl>, pctFG3 <dbl>, fg2m <dbl>, fg2a <dbl>, pctFG2 <dbl>,
+## #   pctEFG <dbl>, ftm <dbl>, fta <dbl>, pctFT <dbl>, orb <dbl>, drb <dbl>,
+## #   trb <dbl>, ast <dbl>, stl <dbl>, blk <dbl>, tov <dbl>, pf <dbl>,
+## #   pts <dbl>, isHOFPlayer <lgl>
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{all_data <-}
+\StringTok{  }\NormalTok{all_data }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{mutate}\NormalTok{(}\DataTypeTok{isSeasonCurrent =}\NormalTok{ slugSeason }\OperatorTok{==}\StringTok{ }\NormalTok{current_season) }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{select}\NormalTok{(typeData, slugSeason, isSeasonCurrent, }\KeywordTok{everything}\NormalTok{())}
+\KeywordTok{head}\NormalTok{(all_data, }\DecValTok{5}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## # A tibble: 5 x 36
+##   typeData slugSeason isSeasonCurrent slugPlayerSeason yearSeason
+##   <chr>    <chr>      <lgl>           <chr>                 <dbl>
+## 1 PerGame  2017-18    FALSE           abrinal01_2018         2018
+## 2 PerGame  2017-18    FALSE           acyqu01_2018           2018
+## 3 PerGame  2017-18    FALSE           adamsst01_2018         2018
+## 4 PerGame  2017-18    FALSE           adebaba01_2018         2018
+## 5 PerGame  2017-18    FALSE           afflaar01_2018         2018
+## # ... with 31 more variables: slugPlayerBREF <chr>, namePlayer <chr>,
+## #   slugPosition <chr>, agePlayer <dbl>, slugTeamBREF <chr>,
+## #   countGames <dbl>, countGamesStarted <dbl>, minutes <dbl>, fgm <dbl>,
+## #   fga <dbl>, pctFG <dbl>, fg3m <dbl>, fg3a <dbl>, pctFG3 <dbl>,
+## #   fg2m <dbl>, fg2a <dbl>, pctFG2 <dbl>, pctEFG <dbl>, ftm <dbl>,
+## #   fta <dbl>, pctFT <dbl>, orb <dbl>, drb <dbl>, trb <dbl>, ast <dbl>,
+## #   stl <dbl>, blk <dbl>, tov <dbl>, pf <dbl>, pts <dbl>,
+## #   isHOFPlayer <lgl>
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{all_data <-}
+\StringTok{  }\NormalTok{all_data }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{mutate}\NormalTok{(}\DataTypeTok{yearSeason =}\NormalTok{ slugSeason }\OperatorTok{%>%}\StringTok{ }\KeywordTok{substr}\NormalTok{(}\DecValTok{1}\NormalTok{, }\DecValTok{4}\NormalTok{) }\OperatorTok{%>%}\StringTok{ }\KeywordTok{as.numeric}\NormalTok{() }\OperatorTok{+}\StringTok{ }\DecValTok{1}\NormalTok{)}
+\KeywordTok{head}\NormalTok{(all_data, }\DecValTok{5}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## # A tibble: 5 x 36
+##   typeData slugSeason isSeasonCurrent slugPlayerSeason yearSeason
+##   <chr>    <chr>      <lgl>           <chr>                 <dbl>
+## 1 PerGame  2017-18    FALSE           abrinal01_2018         2018
+## 2 PerGame  2017-18    FALSE           acyqu01_2018           2018
+## 3 PerGame  2017-18    FALSE           adamsst01_2018         2018
+## 4 PerGame  2017-18    FALSE           adebaba01_2018         2018
+## 5 PerGame  2017-18    FALSE           afflaar01_2018         2018
+## # ... with 31 more variables: slugPlayerBREF <chr>, namePlayer <chr>,
+## #   slugPosition <chr>, agePlayer <dbl>, slugTeamBREF <chr>,
+## #   countGames <dbl>, countGamesStarted <dbl>, minutes <dbl>, fgm <dbl>,
+## #   fga <dbl>, pctFG <dbl>, fg3m <dbl>, fg3a <dbl>, pctFG3 <dbl>,
+## #   fg2m <dbl>, fg2a <dbl>, pctFG2 <dbl>, pctEFG <dbl>, ftm <dbl>,
+## #   fta <dbl>, pctFT <dbl>, orb <dbl>, drb <dbl>, trb <dbl>, ast <dbl>,
+## #   stl <dbl>, blk <dbl>, tov <dbl>, pf <dbl>, pts <dbl>,
+## #   isHOFPlayer <lgl>
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{all_data <-}
+\StringTok{  }\NormalTok{all_data }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{arrange}\NormalTok{(yearSeason)}
+\KeywordTok{head}\NormalTok{(all_data, }\DecValTok{5}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## # A tibble: 5 x 36
+##   typeData slugSeason isSeasonCurrent slugPlayerSeason yearSeason
+##   <chr>    <chr>      <lgl>           <chr>                 <dbl>
+## 1 PerGame  2017-18    FALSE           abrinal01_2018         2018
+## 2 PerGame  2017-18    FALSE           acyqu01_2018           2018
+## 3 PerGame  2017-18    FALSE           adamsst01_2018         2018
+## 4 PerGame  2017-18    FALSE           adebaba01_2018         2018
+## 5 PerGame  2017-18    FALSE           afflaar01_2018         2018
+## # ... with 31 more variables: slugPlayerBREF <chr>, namePlayer <chr>,
+## #   slugPosition <chr>, agePlayer <dbl>, slugTeamBREF <chr>,
+## #   countGames <dbl>, countGamesStarted <dbl>, minutes <dbl>, fgm <dbl>,
+## #   fga <dbl>, pctFG <dbl>, fg3m <dbl>, fg3a <dbl>, pctFG3 <dbl>,
+## #   fg2m <dbl>, fg2a <dbl>, pctFG2 <dbl>, pctEFG <dbl>, ftm <dbl>,
+## #   fta <dbl>, pctFT <dbl>, orb <dbl>, drb <dbl>, trb <dbl>, ast <dbl>,
+## #   stl <dbl>, blk <dbl>, tov <dbl>, pf <dbl>, pts <dbl>,
+## #   isHOFPlayer <lgl>
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{# Create DF that counts number of teams per season for a player and changes column}
+\NormalTok{df_players_teams <-}
+\StringTok{  }\NormalTok{all_data }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{filter}\NormalTok{(slugTeamBREF }\OperatorTok{!=}\StringTok{ "TOT"}\NormalTok{) }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{group_by}\NormalTok{(slugPlayerBREF, slugSeason) }\OperatorTok{%>%}
+\StringTok{  }\NormalTok{dplyr}\OperatorTok{::}\KeywordTok{summarise}\NormalTok{(}
+    \DataTypeTok{slugTeamsBREF =} \KeywordTok{str_c}\NormalTok{(slugTeamBREF, }\DataTypeTok{collapse =} \StringTok{" | "}\NormalTok{),}
+    \DataTypeTok{countTeamsPlayerSeason =} \KeywordTok{length}\NormalTok{(slugTeamsBREF)}
+\NormalTok{  ) }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{ungroup}\NormalTok{()}
+
+\NormalTok{  all_data }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{filter}\NormalTok{(slugTeamBREF }\OperatorTok{!=}\StringTok{ "TOT"}\NormalTok{) }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{group_by}\NormalTok{(slugPlayerBREF, slugSeason) }\OperatorTok{%>%}
+\StringTok{  }\NormalTok{dplyr}\OperatorTok{::}\KeywordTok{summarise}\NormalTok{(}
+    \DataTypeTok{count_teams =} \KeywordTok{n}\NormalTok{(),}
+    \DataTypeTok{slugTeamsBREF =} \KeywordTok{str_c}\NormalTok{(slugTeamBREF, }\DataTypeTok{collapse =} \StringTok{" | "}\NormalTok{),}
+    \DataTypeTok{countTeamsPlayerSeason =} \KeywordTok{length}\NormalTok{(slugTeamsBREF)}
+\NormalTok{  ) }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{ungroup}\NormalTok{() }\OperatorTok{%>%}\StringTok{ }
+\StringTok{    }\KeywordTok{arrange}\NormalTok{(}\KeywordTok{desc}\NormalTok{(count_teams))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## # A tibble: 1,070 x 5
+##    slugPlayerBREF slugSeason count_teams slugTeamsBREF    countTeamsPlayer~
+##    <chr>          <chr>            <int> <chr>                        <int>
+##  1 kilpase01      2017-18              4 BRK | MIL | LAC~                 1
+##  2 booketr01      2017-18              3 BRK | PHI | IND                  1
+##  3 burksal01      2018-19              3 UTA | CLE | SAC                  1
+##  4 canaais01      2018-19              3 PHO | MIN | MIL                  1
+##  5 harrian01      2018-19              3 MEM | CLE | NOP                  1
+##  6 hayesni01      2017-18              3 LAL | TOR | SAC                  1
+##  7 matthwe02      2018-19              3 DAL | NYK | IND                  1
+##  8 monrogr01      2017-18              3 MIL | PHO | BOS                  1
+##  9 monrogr01      2018-19              3 TOR | BOS | PHI                  1
+## 10 smithja02      2018-19              3 WAS | MIL | NOP                  1
+## # ... with 1,060 more rows
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{all_data <-}
+\StringTok{  }\NormalTok{all_data }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{left_join}\NormalTok{(df_players_teams, }\DataTypeTok{by =} \KeywordTok{c}\NormalTok{(}\StringTok{"slugSeason"}\NormalTok{, }\StringTok{"slugPlayerBREF"}\NormalTok{))}
+\KeywordTok{head}\NormalTok{(all_data, }\DecValTok{5}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## # A tibble: 5 x 38
+##   typeData slugSeason isSeasonCurrent slugPlayerSeason yearSeason
+##   <chr>    <chr>      <lgl>           <chr>                 <dbl>
+## 1 PerGame  2017-18    FALSE           abrinal01_2018         2018
+## 2 PerGame  2017-18    FALSE           acyqu01_2018           2018
+## 3 PerGame  2017-18    FALSE           adamsst01_2018         2018
+## 4 PerGame  2017-18    FALSE           adebaba01_2018         2018
+## 5 PerGame  2017-18    FALSE           afflaar01_2018         2018
+## # ... with 33 more variables: slugPlayerBREF <chr>, namePlayer <chr>,
+## #   slugPosition <chr>, agePlayer <dbl>, slugTeamBREF <chr>,
+## #   countGames <dbl>, countGamesStarted <dbl>, minutes <dbl>, fgm <dbl>,
+## #   fga <dbl>, pctFG <dbl>, fg3m <dbl>, fg3a <dbl>, pctFG3 <dbl>,
+## #   fg2m <dbl>, fg2a <dbl>, pctFG2 <dbl>, pctEFG <dbl>, ftm <dbl>,
+## #   fta <dbl>, pctFT <dbl>, orb <dbl>, drb <dbl>, trb <dbl>, ast <dbl>,
+## #   stl <dbl>, blk <dbl>, tov <dbl>, pf <dbl>, pts <dbl>,
+## #   isHOFPlayer <lgl>, slugTeamsBREF <chr>, countTeamsPlayerSeason <int>
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\ControlFlowTok{if}\NormalTok{ (only_totals) \{}
+\NormalTok{  all_data <-}
+\StringTok{    }\NormalTok{all_data }\OperatorTok{%>%}
+\StringTok{    }\KeywordTok{group_by}\NormalTok{(yearSeason, slugPlayerBREF) }\OperatorTok{%>%}
+\StringTok{    }\KeywordTok{filter}\NormalTok{(countGames }\OperatorTok{==}\StringTok{ }\KeywordTok{max}\NormalTok{(countGames)) }\OperatorTok{%>%}
+\StringTok{    }\KeywordTok{ungroup}\NormalTok{()}
+\NormalTok{\}}
+\KeywordTok{glimpse}\NormalTok{(all_data)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Observations: 1,070
+## Variables: 38
+## $ typeData               <chr> "PerGame", "PerGame", "PerGame", "PerGa...
+## $ slugSeason             <chr> "2017-18", "2017-18", "2017-18", "2017-...
+## $ isSeasonCurrent        <lgl> FALSE, FALSE, FALSE, FALSE, FALSE, FALS...
+## $ slugPlayerSeason       <chr> "abrinal01_2018", "acyqu01_2018", "adam...
+## $ yearSeason             <dbl> 2018, 2018, 2018, 2018, 2018, 2018, 201...
+## $ slugPlayerBREF         <chr> "abrinal01", "acyqu01", "adamsst01", "a...
+## $ namePlayer             <chr> "Alex Abrines", "Quincy Acy", "Steven A...
+## $ slugPosition           <chr> "SG", "PF", "C", "C", "SG", "C", "C", "...
+## $ agePlayer              <dbl> 24, 27, 24, 20, 32, 29, 32, 19, 25, 36,...
+## $ slugTeamBREF           <chr> "OKC", "BRK", "OKC", "MIA", "ORL", "MIN...
+## $ countGames             <dbl> 75, 70, 76, 69, 53, 21, 75, 72, 18, 22,...
+## $ countGamesStarted      <dbl> 8, 8, 76, 19, 3, 0, 75, 31, 1, 0, 67, 0...
+## $ minutes                <dbl> 15.1, 19.4, 32.7, 19.8, 12.9, 2.3, 33.5...
+## $ fgm                    <dbl> 1.5, 1.9, 5.9, 2.5, 1.2, 0.2, 9.2, 3.3,...
+## $ fga                    <dbl> 3.9, 5.2, 9.4, 4.9, 3.1, 0.7, 18.0, 5.5...
+## $ pctFG                  <dbl> 0.395, 0.356, 0.629, 0.512, 0.401, 0.33...
+## $ fg3m                   <dbl> 1.1, 1.5, 0.0, 0.0, 0.5, 0.0, 0.4, 0.1,...
+## $ fg3a                   <dbl> 2.9, 4.2, 0.0, 0.1, 1.3, 0.0, 1.2, 0.2,...
+## $ pctFG3                 <dbl> 0.380, 0.349, 0.000, 0.000, 0.386, 0.00...
+## $ fg2m                   <dbl> 0.4, 0.4, 5.9, 2.5, 0.7, 0.2, 8.8, 3.2,...
+## $ fg2a                   <dbl> 0.9, 1.0, 9.3, 4.8, 1.7, 0.7, 16.7, 5.3...
+## $ pctFG2                 <dbl> 0.443, 0.384, 0.631, 0.523, 0.413, 0.33...
+## $ pctEFG                 <dbl> 0.540, 0.496, 0.629, 0.512, 0.485, 0.33...
+## $ ftm                    <dbl> 0.5, 0.7, 2.1, 1.9, 0.4, 0.1, 4.5, 1.6,...
+## $ fta                    <dbl> 0.6, 0.9, 3.8, 2.6, 0.5, 0.3, 5.3, 2.0,...
+## $ pctFT                  <dbl> 0.848, 0.817, 0.559, 0.721, 0.846, 0.33...
+## $ orb                    <dbl> 0.3, 0.6, 5.1, 1.7, 0.1, 0.1, 3.3, 2.0,...
+## $ drb                    <dbl> 1.2, 3.1, 4.0, 3.8, 1.2, 0.6, 5.2, 3.4,...
+## $ trb                    <dbl> 1.5, 3.7, 9.0, 5.5, 1.2, 0.7, 8.5, 5.4,...
+## $ ast                    <dbl> 0.4, 0.8, 1.2, 1.5, 0.6, 0.1, 2.0, 0.7,...
+## $ stl                    <dbl> 0.5, 0.5, 1.2, 0.5, 0.1, 0.1, 0.6, 0.4,...
+## $ blk                    <dbl> 0.1, 0.4, 1.0, 0.6, 0.2, 0.0, 1.2, 1.2,...
+## $ tov                    <dbl> 0.3, 0.9, 1.7, 1.0, 0.4, 0.0, 1.5, 1.1,...
+## $ pf                     <dbl> 1.7, 2.1, 2.8, 2.0, 1.1, 0.5, 2.1, 2.0,...
+## $ pts                    <dbl> 4.7, 5.9, 13.9, 6.9, 3.4, 0.6, 23.1, 8....
+## $ isHOFPlayer            <lgl> FALSE, FALSE, FALSE, FALSE, FALSE, FALS...
+## $ slugTeamsBREF          <chr> "OKC", "BRK", "OKC", "MIA", "ORL", "MIN...
+## $ countTeamsPlayerSeason <int> 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, ...
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{all_data <-}
+\StringTok{  }\NormalTok{all_data }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{nest}\NormalTok{(}\OperatorTok{-}\KeywordTok{c}\NormalTok{(typeData, slugSeason, yearSeason), }\DataTypeTok{.key =}\NormalTok{ dataTable)}
+\KeywordTok{head}\NormalTok{(all_data)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## # A tibble: 2 x 4
+##   typeData slugSeason yearSeason dataTable          
+##   <chr>    <chr>           <dbl> <list>             
+## 1 PerGame  2017-18          2018 <tibble [540 x 35]>
+## 2 PerGame  2018-19          2019 <tibble [530 x 35]>
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{all_data}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## # A tibble: 2 x 4
+##   typeData slugSeason yearSeason dataTable          
+##   <chr>    <chr>           <dbl> <list>             
+## 1 PerGame  2017-18          2018 <tibble [540 x 35]>
+## 2 PerGame  2018-19          2019 <tibble [530 x 35]>
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{glimpse}\NormalTok{(all_data[[}\DecValTok{1}\NormalTok{,}\DecValTok{4}\NormalTok{]])}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Observations: 540
+## Variables: 35
+## $ isSeasonCurrent        <lgl> FALSE, FALSE, FALSE, FALSE, FALSE, FALS...
+## $ slugPlayerSeason       <chr> "abrinal01_2018", "acyqu01_2018", "adam...
+## $ slugPlayerBREF         <chr> "abrinal01", "acyqu01", "adamsst01", "a...
+## $ namePlayer             <chr> "Alex Abrines", "Quincy Acy", "Steven A...
+## $ slugPosition           <chr> "SG", "PF", "C", "C", "SG", "C", "C", "...
+## $ agePlayer              <dbl> 24, 27, 24, 20, 32, 29, 32, 19, 25, 36,...
+## $ slugTeamBREF           <chr> "OKC", "BRK", "OKC", "MIA", "ORL", "MIN...
+## $ countGames             <dbl> 75, 70, 76, 69, 53, 21, 75, 72, 18, 22,...
+## $ countGamesStarted      <dbl> 8, 8, 76, 19, 3, 0, 75, 31, 1, 0, 67, 0...
+## $ minutes                <dbl> 15.1, 19.4, 32.7, 19.8, 12.9, 2.3, 33.5...
+## $ fgm                    <dbl> 1.5, 1.9, 5.9, 2.5, 1.2, 0.2, 9.2, 3.3,...
+## $ fga                    <dbl> 3.9, 5.2, 9.4, 4.9, 3.1, 0.7, 18.0, 5.5...
+## $ pctFG                  <dbl> 0.395, 0.356, 0.629, 0.512, 0.401, 0.33...
+## $ fg3m                   <dbl> 1.1, 1.5, 0.0, 0.0, 0.5, 0.0, 0.4, 0.1,...
+## $ fg3a                   <dbl> 2.9, 4.2, 0.0, 0.1, 1.3, 0.0, 1.2, 0.2,...
+## $ pctFG3                 <dbl> 0.380, 0.349, 0.000, 0.000, 0.386, 0.00...
+## $ fg2m                   <dbl> 0.4, 0.4, 5.9, 2.5, 0.7, 0.2, 8.8, 3.2,...
+## $ fg2a                   <dbl> 0.9, 1.0, 9.3, 4.8, 1.7, 0.7, 16.7, 5.3...
+## $ pctFG2                 <dbl> 0.443, 0.384, 0.631, 0.523, 0.413, 0.33...
+## $ pctEFG                 <dbl> 0.540, 0.496, 0.629, 0.512, 0.485, 0.33...
+## $ ftm                    <dbl> 0.5, 0.7, 2.1, 1.9, 0.4, 0.1, 4.5, 1.6,...
+## $ fta                    <dbl> 0.6, 0.9, 3.8, 2.6, 0.5, 0.3, 5.3, 2.0,...
+## $ pctFT                  <dbl> 0.848, 0.817, 0.559, 0.721, 0.846, 0.33...
+## $ orb                    <dbl> 0.3, 0.6, 5.1, 1.7, 0.1, 0.1, 3.3, 2.0,...
+## $ drb                    <dbl> 1.2, 3.1, 4.0, 3.8, 1.2, 0.6, 5.2, 3.4,...
+## $ trb                    <dbl> 1.5, 3.7, 9.0, 5.5, 1.2, 0.7, 8.5, 5.4,...
+## $ ast                    <dbl> 0.4, 0.8, 1.2, 1.5, 0.6, 0.1, 2.0, 0.7,...
+## $ stl                    <dbl> 0.5, 0.5, 1.2, 0.5, 0.1, 0.1, 0.6, 0.4,...
+## $ blk                    <dbl> 0.1, 0.4, 1.0, 0.6, 0.2, 0.0, 1.2, 1.2,...
+## $ tov                    <dbl> 0.3, 0.9, 1.7, 1.0, 0.4, 0.0, 1.5, 1.1,...
+## $ pf                     <dbl> 1.7, 2.1, 2.8, 2.0, 1.1, 0.5, 2.1, 2.0,...
+## $ pts                    <dbl> 4.7, 5.9, 13.9, 6.9, 3.4, 0.6, 23.1, 8....
+## $ isHOFPlayer            <lgl> FALSE, FALSE, FALSE, FALSE, FALSE, FALS...
+## $ slugTeamsBREF          <chr> "OKC", "BRK", "OKC", "MIA", "ORL", "MIN...
+## $ countTeamsPlayerSeason <int> 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, ...
+\end{verbatim}
+
+\paragraph{.parse\_player\_season}\label{parse_player_season}
+
+\subparagraph{Full Function}\label{full-function-1}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{.parse_player_season <-}
+\StringTok{  }\NormalTok{memoise}\OperatorTok{::}\KeywordTok{memoise}\NormalTok{(}
+    \ControlFlowTok{function}\NormalTok{(}\DataTypeTok{url =} \StringTok{"http://www.basketball-reference.com/leagues/NBA_1997_per_game.html"}\NormalTok{,}
+           \DataTypeTok{return_message =} \OtherTok{TRUE}\NormalTok{) \{}
+\NormalTok{    ## case_when}
+
+\NormalTok{    page <-}
+\StringTok{      }\NormalTok{url }\OperatorTok{%>%}
+\StringTok{      }\KeywordTok{read_html}\NormalTok{()}
+    \CommentTok{# Creates df that has columns: scheme (http), hostname(www.basketball-reference.com), and path(leagues/NBA_1997_per_game.htm)}
+\NormalTok{    url_df <-}\StringTok{ }\NormalTok{url }\OperatorTok{%>%}\StringTok{ }\NormalTok{httr}\OperatorTok{::}\KeywordTok{parse_url}\NormalTok{() }\OperatorTok{%>%}\StringTok{ }\KeywordTok{flatten_df}\NormalTok{()}
+    \CommentTok{# Returns "1997_per_game"}
+\NormalTok{    url_path <-}
+\StringTok{      }\NormalTok{url_df}\OperatorTok{$}\NormalTok{path }\OperatorTok{%>%}\StringTok{ }\KeywordTok{str_replace_all}\NormalTok{(}\StringTok{".html|leagues/NBA_"}\NormalTok{, }\StringTok{''}\NormalTok{)}
+
+\NormalTok{    year_season_end <-}
+\StringTok{      }\NormalTok{url_path }\OperatorTok{%>%}\StringTok{ }\KeywordTok{str_split}\NormalTok{(}\StringTok{'}\CharTok{\textbackslash{}\textbackslash{}}\StringTok{_'}\NormalTok{) }\OperatorTok{%>%}\StringTok{ }\KeywordTok{flatten_chr}\NormalTok{() }\OperatorTok{%>%}\StringTok{ }\NormalTok{.[[}\DecValTok{1}\NormalTok{]] }\OperatorTok{%>%}\StringTok{ }\KeywordTok{as.character}\NormalTok{() }\OperatorTok{%>%}\StringTok{ }\NormalTok{readr}\OperatorTok{::}\KeywordTok{parse_number}\NormalTok{()}
+
+\NormalTok{    name_slug <-}
+\StringTok{      }\NormalTok{url_path }\OperatorTok{%>%}
+\StringTok{      }\KeywordTok{map_chr}\NormalTok{(}\ControlFlowTok{function}\NormalTok{(x) \{}
+\NormalTok{        parts <-}
+\StringTok{          }\NormalTok{x }\OperatorTok{%>%}\StringTok{ }\KeywordTok{str_split}\NormalTok{(}\StringTok{'}\CharTok{\textbackslash{}\textbackslash{}}\StringTok{_'}\NormalTok{) }\OperatorTok{%>%}\StringTok{ }\KeywordTok{flatten_chr}\NormalTok{()}
+
+\NormalTok{        parts[}\DecValTok{2}\OperatorTok{:}\KeywordTok{length}\NormalTok{(parts)] }\OperatorTok{%>%}\StringTok{ }\KeywordTok{str_to_title}\NormalTok{() }\OperatorTok{%>%}\StringTok{ }\KeywordTok{str_c}\NormalTok{(}\DataTypeTok{collapse =} \StringTok{''}\NormalTok{)}
+\NormalTok{      \})}
+
+\NormalTok{    id_season <-}
+\StringTok{      }\KeywordTok{list}\NormalTok{(year_season_end }\OperatorTok{-}\StringTok{ }\DecValTok{1}\NormalTok{, }\StringTok{'-'}\NormalTok{, year_season_end }\OperatorTok{%>%}\StringTok{ }\KeywordTok{str_sub}\NormalTok{(}\DecValTok{3}\NormalTok{, }\DecValTok{4}\NormalTok{)) }\OperatorTok{%>%}
+\StringTok{      }\NormalTok{purrr}\OperatorTok{::}\KeywordTok{reduce}\NormalTok{(paste0)}
+    \CommentTok{# Character Vector of Player Names}
+\NormalTok{    players <-}
+\StringTok{      }\NormalTok{page }\OperatorTok{%>%}
+\StringTok{      }\KeywordTok{html_nodes}\NormalTok{(}\StringTok{'th+ .left a'}\NormalTok{) }\OperatorTok{%>%}
+\StringTok{      }\KeywordTok{html_text}\NormalTok{()}
+    \CommentTok{# Gets Player ID's Ex. "a/abdulma02.html"}
+\NormalTok{    player_id <-}
+\StringTok{      }\NormalTok{page }\OperatorTok{%>%}
+\StringTok{      }\KeywordTok{html_nodes}\NormalTok{(}\StringTok{'th+ .left a'}\NormalTok{) }\OperatorTok{%>%}
+\StringTok{      }\KeywordTok{html_attr}\NormalTok{(}\StringTok{'href'}\NormalTok{) }\OperatorTok{%>%}
+\StringTok{      }\CommentTok{# "/players/a/abdulma02.html"}
+\StringTok{      }\KeywordTok{str_replace_all}\NormalTok{(}\StringTok{'/players/'}\NormalTok{, }\StringTok{''}\NormalTok{)}
+
+\NormalTok{    player_ids <-}
+\StringTok{      }\NormalTok{player_id }\OperatorTok{%>%}
+\StringTok{      }\KeywordTok{map_chr}\NormalTok{(}\ControlFlowTok{function}\NormalTok{(x) \{}
+\NormalTok{        x }\OperatorTok{%>%}
+\StringTok{          }\CommentTok{# Get Player ID's and Remove .html. Ex. "a/abdulma02"}
+\StringTok{          }\KeywordTok{str_replace_all}\NormalTok{(}\StringTok{'.html'}\NormalTok{, }\StringTok{''}\NormalTok{) }\OperatorTok{%>%}
+\StringTok{          }\KeywordTok{str_split}\NormalTok{(}\StringTok{'/'}\NormalTok{) }\OperatorTok{%>%}
+\StringTok{          }\KeywordTok{flatten_chr}\NormalTok{() }\OperatorTok{%>%}
+\StringTok{          }\NormalTok{.[[}\DecValTok{2}\NormalTok{]]}
+\NormalTok{      \})}
+
+\NormalTok{    df_players <-}
+\StringTok{      }\KeywordTok{tibble}\NormalTok{(}\DataTypeTok{slugPlayerBREF =}\NormalTok{ player_ids, }\DataTypeTok{namePlayer =}\NormalTok{ players) }\OperatorTok{%>%}
+\StringTok{      }\KeywordTok{distinct}\NormalTok{() }\OperatorTok{%>%}
+\StringTok{      }\KeywordTok{mutate}\NormalTok{(}\DataTypeTok{numberPlayer =} \DecValTok{1}\OperatorTok{:}\KeywordTok{n}\NormalTok{()) }\OperatorTok{%>%}
+\StringTok{      }\KeywordTok{select}\NormalTok{(numberPlayer, }\KeywordTok{everything}\NormalTok{())}
+
+\NormalTok{    df <-}
+\StringTok{      }\NormalTok{page }\OperatorTok{%>%}
+\StringTok{      }\KeywordTok{html_table}\NormalTok{() }\OperatorTok{%>%}
+\StringTok{      }\NormalTok{.[[}\DecValTok{1}\NormalTok{]] }\OperatorTok{%>%}
+\StringTok{      }\KeywordTok{data.frame}\NormalTok{(}\DataTypeTok{stringsAsFactors =} \OtherTok{FALSE}\NormalTok{) }\OperatorTok{%>%}
+\StringTok{      }\KeywordTok{tbl_df}\NormalTok{() }\OperatorTok{%>%}
+\StringTok{      }\NormalTok{dplyr}\OperatorTok{::}\KeywordTok{select}\NormalTok{(}\OperatorTok{-}\NormalTok{dplyr}\OperatorTok{::}\KeywordTok{matches}\NormalTok{(}\StringTok{"Var"}\NormalTok{))}
+
+\NormalTok{    df <-}
+\StringTok{      }\NormalTok{df }\OperatorTok{%>%}
+\StringTok{      }\KeywordTok{mutate_at}\NormalTok{(df }\OperatorTok{%>%}\StringTok{ }\NormalTok{dplyr}\OperatorTok{::}\KeywordTok{select}\NormalTok{(}\OperatorTok{-}\KeywordTok{one_of}\NormalTok{(}\KeywordTok{c}\NormalTok{(}
+        \StringTok{"Tm"}\NormalTok{, }\StringTok{"Player"}\NormalTok{, }\StringTok{"Pos"}
+\NormalTok{      ))) }\OperatorTok{%>%}\StringTok{ }\KeywordTok{names}\NormalTok{(),}
+      \KeywordTok{funs}\NormalTok{(. }\OperatorTok{%>%}\StringTok{ }\KeywordTok{as.numeric}\NormalTok{())) }\OperatorTok{%>%}
+\StringTok{      }\KeywordTok{filter}\NormalTok{(}\OperatorTok{!}\NormalTok{Rk }\OperatorTok{%>%}\StringTok{ }\KeywordTok{is.na}\NormalTok{()) }\OperatorTok{%>%}
+\StringTok{      }\KeywordTok{suppressWarnings}\NormalTok{()}
+
+    \CommentTok{# df_players_unique <-}
+    \CommentTok{#   df %>% group_by(Rk) %>% slice(1) %>%}
+    \CommentTok{#   select(numberPlayer = Rk, namePlayer = Player) %>%}
+    \CommentTok{#   ungroup()}
+    \CommentTok{#}
+    \CommentTok{# df <-}
+    \CommentTok{#   df %>%}
+    \CommentTok{#   dplyr::select(-dplyr::matches("Rk"))}
+
+\NormalTok{    df_names <-}
+\StringTok{      }\KeywordTok{get_bref_name_df}\NormalTok{()}
+
+\NormalTok{    bref_names <-}
+\StringTok{      }\KeywordTok{names}\NormalTok{(df)}
+
+\NormalTok{    actual_names <-}
+\StringTok{      }\KeywordTok{seq_along}\NormalTok{(bref_names) }\OperatorTok{%>%}
+\StringTok{      }\KeywordTok{map_chr}\NormalTok{(}\ControlFlowTok{function}\NormalTok{(x) \{}
+\NormalTok{        actual <-}
+\StringTok{          }\NormalTok{df_names }\OperatorTok{%>%}
+\StringTok{          }\KeywordTok{filter}\NormalTok{(nameBREF }\OperatorTok{==}\StringTok{ }\NormalTok{bref_names[x]) }\OperatorTok{%>%}
+\StringTok{          }\NormalTok{.}\OperatorTok{$}\NormalTok{nameActual}
+
+        \ControlFlowTok{if}\NormalTok{ (actual }\OperatorTok{==}\StringTok{ 'MinutesPlayed'}\NormalTok{) \{}
+          \ControlFlowTok{if}\NormalTok{ (}\OperatorTok{!}\NormalTok{name_slug }\OperatorTok{==}\StringTok{ 'pergame'}\NormalTok{) \{}
+\NormalTok{            actual <-}
+\StringTok{              }\KeywordTok{str_c}\NormalTok{(}\StringTok{'total'}\NormalTok{, actual)}
+\NormalTok{          \} }\ControlFlowTok{else}\NormalTok{ \{}
+\NormalTok{            actual <-}
+\StringTok{              }\KeywordTok{str_c}\NormalTok{(}\StringTok{'pergame'}\NormalTok{, actual)}
+\NormalTok{          \}}
+          \KeywordTok{return}\NormalTok{(actual)}
+\NormalTok{        \}}
+
+        \ControlFlowTok{if}\NormalTok{ (actual }\OperatorTok{%>%}\StringTok{ }\KeywordTok{substr}\NormalTok{(}\DecValTok{1}\NormalTok{, }\DecValTok{1}\NormalTok{) }\OperatorTok{%in%}\StringTok{ }\NormalTok{LETTERS) \{}
+\NormalTok{          actual <-}
+\StringTok{            }\KeywordTok{str_c}\NormalTok{(name_slug, actual)}
+\NormalTok{        \}}
+        \KeywordTok{return}\NormalTok{(actual)}
+\NormalTok{      \})}
+
+\NormalTok{    df <-}
+\StringTok{      }\NormalTok{df }\OperatorTok{%>%}
+\StringTok{      }\NormalTok{purrr}\OperatorTok{::}\KeywordTok{set_names}\NormalTok{(actual_names) }\OperatorTok{%>%}
+\StringTok{      }\KeywordTok{mutate}\NormalTok{(}
+        \DataTypeTok{isHOFPlayer =}\NormalTok{ namePlayer }\OperatorTok{%>%}\StringTok{ }\KeywordTok{str_detect}\NormalTok{(}\StringTok{'}\CharTok{\textbackslash{}\textbackslash{}}\StringTok{*'}\NormalTok{),}
+        \DataTypeTok{namePlayer =}\NormalTok{ namePlayer }\OperatorTok{%>%}\StringTok{ }\KeywordTok{str_replace_all}\NormalTok{(}\StringTok{'}\CharTok{\textbackslash{}\textbackslash{}}\StringTok{*'}\NormalTok{, }\StringTok{''}\NormalTok{)}
+\NormalTok{      )}
+
+\NormalTok{    df <-}
+\StringTok{      }\NormalTok{df }\OperatorTok{%>%}
+\StringTok{      }\KeywordTok{left_join}\NormalTok{(df_players) }\OperatorTok{%>%}
+\StringTok{      }\KeywordTok{distinct}\NormalTok{() }\OperatorTok{%>%}
+\StringTok{      }\KeywordTok{suppressMessages}\NormalTok{() }\OperatorTok{%>%}
+\StringTok{      }\KeywordTok{mutate}\NormalTok{(}\DataTypeTok{slugSeason =}\NormalTok{ id_season,}
+             \DataTypeTok{yearSeason =}\NormalTok{ year_season_end,}
+             \DataTypeTok{urlData =}\NormalTok{ url) }\OperatorTok{%>%}
+\StringTok{      }\NormalTok{dplyr}\OperatorTok{::}\KeywordTok{select}\NormalTok{(slugSeason, yearSeason,}
+\NormalTok{                    slugPlayerBREF, }\KeywordTok{everything}\NormalTok{())}
+
+\NormalTok{    df <-}
+\StringTok{      }\NormalTok{df }\OperatorTok{%>%}
+\StringTok{      }\KeywordTok{mutate_at}\NormalTok{(df }\OperatorTok{%>%}\StringTok{ }\NormalTok{dplyr}\OperatorTok{::}\KeywordTok{select}\NormalTok{(dplyr}\OperatorTok{::}\KeywordTok{matches}\NormalTok{(}\StringTok{"pct"}\NormalTok{)) }\OperatorTok{%>%}\StringTok{ }\KeywordTok{names}\NormalTok{(),}
+                \KeywordTok{funs}\NormalTok{(}\KeywordTok{ifelse}\NormalTok{(. }\OperatorTok{>=}\StringTok{ }\DecValTok{1}\NormalTok{, . }\OperatorTok{/}\StringTok{ }\DecValTok{100}\NormalTok{, .))) }\OperatorTok{%>%}
+\StringTok{      }\KeywordTok{mutate}\NormalTok{(}\DataTypeTok{typeData =}\NormalTok{ name_slug) }\OperatorTok{%>%}
+\StringTok{      }\NormalTok{dplyr}\OperatorTok{::}\KeywordTok{select}\NormalTok{(typeData, }\KeywordTok{everything}\NormalTok{())}
+
+    \ControlFlowTok{if}\NormalTok{ (return_message) \{}
+      \KeywordTok{list}\NormalTok{(}\StringTok{"parsed "}\NormalTok{, url) }\OperatorTok{%>%}
+\StringTok{        }\NormalTok{purrr}\OperatorTok{::}\KeywordTok{reduce}\NormalTok{(paste0) }\OperatorTok{%>%}
+\StringTok{        }\KeywordTok{cat}\NormalTok{(}\DataTypeTok{fill =}\NormalTok{ T)}
+\NormalTok{    \}}
+\NormalTok{    df <-}\StringTok{ }\NormalTok{df }\OperatorTok{%>%}
+\StringTok{      }\KeywordTok{select}\NormalTok{(}\OperatorTok{-}\KeywordTok{one_of}\NormalTok{(}\StringTok{"numberPlayer"}\NormalTok{))}
+
+\NormalTok{    df <-}\StringTok{ }\NormalTok{df }\OperatorTok{%>%}
+\StringTok{      }\KeywordTok{mutate_if}\NormalTok{(is.numeric, }\KeywordTok{list}\NormalTok{(}\ControlFlowTok{function}\NormalTok{(x)\{}
+        \KeywordTok{ifelse}\NormalTok{(}\KeywordTok{is.na}\NormalTok{(x), }\DecValTok{0}\NormalTok{, x)}
+\NormalTok{      \}))}
+    \KeywordTok{gc}\NormalTok{()}
+\NormalTok{    df}
+\NormalTok{  \}}
+\NormalTok{    )}
+\end{Highlighting}
+\end{Shaded}
+
+\subparagraph{Function Breakdown}\label{function-breakdown-1}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{url <-}\StringTok{  "http://www.basketball-reference.com/leagues/NBA_2019_per_game.html"}
+
+\NormalTok{page <-}
+\StringTok{  }\NormalTok{url }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{read_html}\NormalTok{()}
+
+\CommentTok{# Creates df that has columns: scheme (http), hostname(www.basketball-reference.com), and path(leagues/NBA_1997_per_game.htm)}
+\NormalTok{url_df <-}\StringTok{ }\NormalTok{url }\OperatorTok{%>%}
+\StringTok{  }\NormalTok{httr}\OperatorTok{::}\KeywordTok{parse_url}\NormalTok{() }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{flatten_df}\NormalTok{()}
+\KeywordTok{head}\NormalTok{(url_df,}\DecValTok{5}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## # A tibble: 1 x 3
+##   scheme hostname                     path                          
+##   <chr>  <chr>                        <chr>                         
+## 1 http   www.basketball-reference.com leagues/NBA_2019_per_game.html
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+      \CommentTok{# Returns "1997_per_game"}
+\NormalTok{url_path <-}
+\StringTok{  }\NormalTok{url_df}\OperatorTok{$}\NormalTok{path }\OperatorTok{%>%}\StringTok{ }\KeywordTok{str_replace_all}\NormalTok{(}\StringTok{".html|leagues/NBA_"}\NormalTok{, }\StringTok{""}\NormalTok{)}
+\NormalTok{url_path}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] "2019_per_game"
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{year_season_end <-}
+\StringTok{  }\NormalTok{url_path }\OperatorTok{%>%}\StringTok{ }
+\StringTok{  }\KeywordTok{str_split}\NormalTok{(}\StringTok{'}\CharTok{\textbackslash{}\textbackslash{}}\StringTok{_'}\NormalTok{) }\OperatorTok{%>%}\StringTok{ }
+\StringTok{  }\KeywordTok{flatten_chr}\NormalTok{() }\OperatorTok{%>%}\StringTok{ }
+\StringTok{  }\NormalTok{.[[}\DecValTok{1}\NormalTok{]] }\OperatorTok{%>%}\StringTok{ }
+\StringTok{  }\KeywordTok{as.character}\NormalTok{() }\OperatorTok{%>%}\StringTok{ }
+\StringTok{  }\NormalTok{readr}\OperatorTok{::}\KeywordTok{parse_number}\NormalTok{()}
+
+\NormalTok{year_season_end}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 2019
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{name_slug <-}
+\StringTok{  }\NormalTok{url_path }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{map_chr}\NormalTok{(}\ControlFlowTok{function}\NormalTok{(x) \{}
+    
+\NormalTok{    parts <-}\StringTok{ }\NormalTok{x }\OperatorTok{%>%}\StringTok{ }\KeywordTok{str_split}\NormalTok{(}\StringTok{'}\CharTok{\textbackslash{}\textbackslash{}}\StringTok{_'}\NormalTok{) }\OperatorTok{%>%}\StringTok{ }\KeywordTok{flatten_chr}\NormalTok{()}
+    
+\NormalTok{    parts[}\DecValTok{2}\OperatorTok{:}\KeywordTok{length}\NormalTok{(parts)] }\OperatorTok{%>%}\StringTok{ }\KeywordTok{str_to_title}\NormalTok{() }\OperatorTok{%>%}\StringTok{ }\KeywordTok{str_c}\NormalTok{(}\DataTypeTok{collapse =} \StringTok{''}\NormalTok{)}
+\NormalTok{      \})}
+
+\NormalTok{name_slug}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] "PerGame"
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{id_season <-}
+\StringTok{  }\KeywordTok{list}\NormalTok{(year_season_end }\OperatorTok{-}\StringTok{ }\DecValTok{1}\NormalTok{, }\StringTok{"-"}\NormalTok{, year_season_end }\OperatorTok{%>%}\StringTok{ }\KeywordTok{str_sub}\NormalTok{(}\DecValTok{3}\NormalTok{, }\DecValTok{4}\NormalTok{)) }\OperatorTok{%>%}
+\StringTok{  }\NormalTok{purrr}\OperatorTok{::}\KeywordTok{reduce}\NormalTok{(paste0)}
+\NormalTok{id_season}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] "2018-19"
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{# Character Vector of Player Names}
+\NormalTok{players <-}
+\StringTok{  }\NormalTok{page }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{html_nodes}\NormalTok{(}\StringTok{"th+ .left a"}\NormalTok{) }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{html_text}\NormalTok{()}
+\KeywordTok{head}\NormalTok{(players, }\DecValTok{5}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] "Alex Abrines" "Quincy Acy"   "Jaylen Adams" "Steven Adams"
+## [5] "Bam Adebayo"
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{# Gets Player ID's Ex. "a/abdulma02.html"}
+\NormalTok{player_id <-}
+\StringTok{  }\NormalTok{page }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{html_nodes}\NormalTok{(}\StringTok{"th+ .left a"}\NormalTok{) }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{html_attr}\NormalTok{(}\StringTok{"href"}\NormalTok{) }\OperatorTok{%>%}
+\StringTok{  }\CommentTok{# "/players/a/abdulma02.html"}
+\StringTok{  }\KeywordTok{str_replace_all}\NormalTok{(}\StringTok{"/players/"}\NormalTok{, }\StringTok{""}\NormalTok{)}
+\KeywordTok{head}\NormalTok{(player_id, }\DecValTok{5}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] "a/abrinal01.html" "a/acyqu01.html"   "a/adamsja01.html"
+## [4] "a/adamsst01.html" "a/adebaba01.html"
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{player_ids <-}
+\StringTok{  }\NormalTok{player_id }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{map_chr}\NormalTok{(}\ControlFlowTok{function}\NormalTok{(x) \{}
+\NormalTok{    x }\OperatorTok{%>%}
+\StringTok{      }\CommentTok{# Get Player ID's and Remove .html. Ex. "a/abdulma02"}
+\StringTok{      }\KeywordTok{str_replace_all}\NormalTok{(}\StringTok{".html"}\NormalTok{, }\StringTok{""}\NormalTok{) }\OperatorTok{%>%}
+\StringTok{      }\KeywordTok{str_split}\NormalTok{(}\StringTok{"/"}\NormalTok{) }\OperatorTok{%>%}
+\StringTok{      }\KeywordTok{flatten_chr}\NormalTok{() }\OperatorTok{%>%}
+\StringTok{      }\NormalTok{.[[}\DecValTok{2}\NormalTok{]]}
+\NormalTok{  \})}
+\KeywordTok{head}\NormalTok{(player_ids, }\DecValTok{5}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] "abrinal01" "acyqu01"   "adamsja01" "adamsst01" "adebaba01"
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{df_players <-}
+\StringTok{  }\KeywordTok{tibble}\NormalTok{(}\DataTypeTok{slugPlayerBREF =}\NormalTok{ player_ids, }\DataTypeTok{namePlayer =}\NormalTok{ players) }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{distinct}\NormalTok{() }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{mutate}\NormalTok{(}\DataTypeTok{numberPlayer =} \DecValTok{1}\OperatorTok{:}\KeywordTok{n}\NormalTok{()) }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{select}\NormalTok{(numberPlayer, }\KeywordTok{everything}\NormalTok{())}
+\KeywordTok{head}\NormalTok{(df_players, }\DecValTok{5}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## # A tibble: 5 x 3
+##   numberPlayer slugPlayerBREF namePlayer  
+##          <int> <chr>          <chr>       
+## 1            1 abrinal01      Alex Abrines
+## 2            2 acyqu01        Quincy Acy  
+## 3            3 adamsja01      Jaylen Adams
+## 4            4 adamsst01      Steven Adams
+## 5            5 adebaba01      Bam Adebayo
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{df <-}
+\StringTok{  }\NormalTok{page }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{html_table}\NormalTok{() }\OperatorTok{%>%}
+\StringTok{  }\NormalTok{.[[}\DecValTok{1}\NormalTok{]] }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{data.frame}\NormalTok{(}\DataTypeTok{stringsAsFactors =} \OtherTok{FALSE}\NormalTok{) }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{tbl_df}\NormalTok{() }\OperatorTok{%>%}
+\StringTok{  }\NormalTok{dplyr}\OperatorTok{::}\KeywordTok{select}\NormalTok{(}\OperatorTok{-}\NormalTok{dplyr}\OperatorTok{::}\KeywordTok{matches}\NormalTok{(}\StringTok{"Var"}\NormalTok{))}
+\KeywordTok{head}\NormalTok{(df, }\DecValTok{5}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## # A tibble: 5 x 30
+##   Rk    Player  Pos   Age   Tm    G     GS    MP    FG    FGA   FG.   X3P  
+##   <chr> <chr>   <chr> <chr> <chr> <chr> <chr> <chr> <chr> <chr> <chr> <chr>
+## 1 1     Alex A~ SG    25    OKC   31    2     19.0  1.8   5.1   .357  1.3  
+## 2 2     Quincy~ PF    28    PHO   10    0     12.3  0.4   1.8   .222  0.2  
+## 3 3     Jaylen~ PG    22    ATL   34    1     12.6  1.1   3.2   .345  0.7  
+## 4 4     Steven~ C     25    OKC   80    80    33.4  6.0   10.1  .595  0.0  
+## 5 5     Bam Ad~ C     21    MIA   82    28    23.3  3.4   5.9   .576  0.0  
+## # ... with 18 more variables: X3PA <chr>, X3P. <chr>, X2P <chr>,
+## #   X2PA <chr>, X2P. <chr>, eFG. <chr>, FT <chr>, FTA <chr>, FT. <chr>,
+## #   ORB <chr>, DRB <chr>, TRB <chr>, AST <chr>, STL <chr>, BLK <chr>,
+## #   TOV <chr>, PF <chr>, PTS <chr>
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{df <-}
+\StringTok{  }\NormalTok{df }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{mutate_at}\NormalTok{(}
+\NormalTok{    df }\OperatorTok{%>%}\StringTok{ }\NormalTok{dplyr}\OperatorTok{::}\KeywordTok{select}\NormalTok{(}\OperatorTok{-}\KeywordTok{one_of}\NormalTok{(}\KeywordTok{c}\NormalTok{(}
+      \StringTok{"Tm"}\NormalTok{, }\StringTok{"Player"}\NormalTok{, }\StringTok{"Pos"}
+\NormalTok{    ))) }\OperatorTok{%>%}\StringTok{ }\KeywordTok{names}\NormalTok{(),}
+    \KeywordTok{funs}\NormalTok{(. }\OperatorTok{%>%}\StringTok{ }\KeywordTok{as.numeric}\NormalTok{())}
+\NormalTok{  ) }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{filter}\NormalTok{(}\OperatorTok{!}\NormalTok{Rk }\OperatorTok{%>%}\StringTok{ }\KeywordTok{is.na}\NormalTok{()) }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{suppressWarnings}\NormalTok{()}
+\KeywordTok{head}\NormalTok{(df, }\DecValTok{5}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## # A tibble: 5 x 30
+##      Rk Player  Pos     Age Tm        G    GS    MP    FG   FGA   FG.   X3P
+##   <dbl> <chr>   <chr> <dbl> <chr> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl>
+## 1     1 Alex A~ SG       25 OKC      31     2  19     1.8   5.1 0.357   1.3
+## 2     2 Quincy~ PF       28 PHO      10     0  12.3   0.4   1.8 0.222   0.2
+## 3     3 Jaylen~ PG       22 ATL      34     1  12.6   1.1   3.2 0.345   0.7
+## 4     4 Steven~ C        25 OKC      80    80  33.4   6    10.1 0.595   0  
+## 5     5 Bam Ad~ C        21 MIA      82    28  23.3   3.4   5.9 0.576   0  
+## # ... with 18 more variables: X3PA <dbl>, X3P. <dbl>, X2P <dbl>,
+## #   X2PA <dbl>, X2P. <dbl>, eFG. <dbl>, FT <dbl>, FTA <dbl>, FT. <dbl>,
+## #   ORB <dbl>, DRB <dbl>, TRB <dbl>, AST <dbl>, STL <dbl>, BLK <dbl>,
+## #   TOV <dbl>, PF <dbl>, PTS <dbl>
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+      \CommentTok{# df_players_unique <-}
+      \CommentTok{#   df %>% group_by(Rk) %>% slice(1) %>%}
+      \CommentTok{#   select(numberPlayer = Rk, namePlayer = Player) %>%}
+      \CommentTok{#   ungroup()}
+      \CommentTok{#}
+      \CommentTok{# df <-}
+      \CommentTok{#   df %>%}
+      \CommentTok{#   dplyr::select(-dplyr::matches("Rk"))}
+
+\NormalTok{df_names <-}
+\StringTok{  }\KeywordTok{get_bref_name_df}\NormalTok{()}
+\KeywordTok{head}\NormalTok{(df_names, }\DecValTok{5}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## # A tibble: 5 x 2
+##   nameBREF   nameActual    
+##   <chr>      <chr>         
+## 1 slugSeason slugSeason    
+## 2 yearSeason yearSeason    
+## 3 Rk         numberPlayer  
+## 4 idPlayer   slugPlayerBREF
+## 5 Player     namePlayer
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{bref_names <-}
+\StringTok{  }\KeywordTok{names}\NormalTok{(df)}
+\KeywordTok{head}\NormalTok{(bref_names, }\DecValTok{5}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] "Rk"     "Player" "Pos"    "Age"    "Tm"
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{# Change Actual Names from df_bref}
+\NormalTok{    actual_names <-}
+\StringTok{      }\KeywordTok{seq_along}\NormalTok{(bref_names) }\OperatorTok{%>%}
+\StringTok{      }\KeywordTok{map_chr}\NormalTok{(}\ControlFlowTok{function}\NormalTok{(x) \{}
+        
+\CommentTok{# Extract Actual Name}
+\NormalTok{        actual <-}
+\StringTok{          }\NormalTok{df_names }\OperatorTok{%>%}
+\StringTok{          }\KeywordTok{filter}\NormalTok{(nameBREF }\OperatorTok{==}\StringTok{ }\NormalTok{bref_names[x]) }\OperatorTok{%>%}
+\StringTok{          }\NormalTok{.}\OperatorTok{$}\NormalTok{nameActual}
+
+        \ControlFlowTok{if}\NormalTok{ (actual }\OperatorTok{==}\StringTok{ 'MinutesPlayed'}\NormalTok{) \{}
+          \ControlFlowTok{if}\NormalTok{ (}\OperatorTok{!}\NormalTok{name_slug }\OperatorTok{==}\StringTok{ 'pergame'}\NormalTok{) \{}
+\NormalTok{            actual <-}
+\StringTok{              }\KeywordTok{str_c}\NormalTok{(}\StringTok{'total'}\NormalTok{, actual)}
+\NormalTok{          \} }\ControlFlowTok{else}\NormalTok{ \{}
+\NormalTok{            actual <-}
+\StringTok{              }\KeywordTok{str_c}\NormalTok{(}\StringTok{'pergame'}\NormalTok{, actual)}
+\NormalTok{          \}}
+          \KeywordTok{return}\NormalTok{(actual)}
+\NormalTok{        \}}
+
+        \ControlFlowTok{if}\NormalTok{ (actual }\OperatorTok{%>%}\StringTok{ }\KeywordTok{substr}\NormalTok{(}\DecValTok{1}\NormalTok{, }\DecValTok{1}\NormalTok{) }\OperatorTok{%in%}\StringTok{ }\NormalTok{LETTERS) \{}
+\NormalTok{          actual <-}
+\StringTok{            }\KeywordTok{str_c}\NormalTok{(name_slug, actual)}
+\NormalTok{        \}}
+        \KeywordTok{return}\NormalTok{(actual)}
+\NormalTok{      \})}
+
+\KeywordTok{head}\NormalTok{(actual_names, }\DecValTok{5}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] "numberPlayer" "namePlayer"   "slugPosition" "agePlayer"   
+## [5] "slugTeamBREF"
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{    df <-}
+\StringTok{      }\NormalTok{df }\OperatorTok{%>%}
+\StringTok{      }\NormalTok{purrr}\OperatorTok{::}\KeywordTok{set_names}\NormalTok{(actual_names) }\OperatorTok{%>%}
+\StringTok{      }\KeywordTok{mutate}\NormalTok{(}
+        \DataTypeTok{isHOFPlayer =}\NormalTok{ namePlayer }\OperatorTok{%>%}\StringTok{ }\KeywordTok{str_detect}\NormalTok{(}\StringTok{'}\CharTok{\textbackslash{}\textbackslash{}}\StringTok{*'}\NormalTok{),}
+        \DataTypeTok{namePlayer =}\NormalTok{ namePlayer }\OperatorTok{%>%}\StringTok{ }\KeywordTok{str_replace_all}\NormalTok{(}\StringTok{'}\CharTok{\textbackslash{}\textbackslash{}}\StringTok{*'}\NormalTok{, }\StringTok{''}\NormalTok{)}
+\NormalTok{      )}
+    
+\KeywordTok{head}\NormalTok{(df, }\DecValTok{5}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## # A tibble: 5 x 31
+##   numberPlayer namePlayer slugPosition agePlayer slugTeamBREF countGames
+##          <dbl> <chr>      <chr>            <dbl> <chr>             <dbl>
+## 1            1 Alex Abri~ SG                  25 OKC                  31
+## 2            2 Quincy Acy PF                  28 PHO                  10
+## 3            3 Jaylen Ad~ PG                  22 ATL                  34
+## 4            4 Steven Ad~ C                   25 OKC                  80
+## 5            5 Bam Adeba~ C                   21 MIA                  82
+## # ... with 25 more variables: countGamesStarted <dbl>, minutes <dbl>,
+## #   fgm <dbl>, fga <dbl>, pctFG <dbl>, fg3m <dbl>, fg3a <dbl>,
+## #   pctFG3 <dbl>, fg2m <dbl>, fg2a <dbl>, pctFG2 <dbl>, pctEFG <dbl>,
+## #   ftm <dbl>, fta <dbl>, pctFT <dbl>, orb <dbl>, drb <dbl>, trb <dbl>,
+## #   ast <dbl>, stl <dbl>, blk <dbl>, tov <dbl>, pf <dbl>, pts <dbl>,
+## #   isHOFPlayer <lgl>
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{df <-}
+\StringTok{  }\NormalTok{df }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{left_join}\NormalTok{(df_players) }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{distinct}\NormalTok{() }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{suppressMessages}\NormalTok{() }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{mutate}\NormalTok{(}
+    \DataTypeTok{slugSeason =}\NormalTok{ id_season,}
+    \DataTypeTok{yearSeason =}\NormalTok{ year_season_end,}
+    \DataTypeTok{urlData =}\NormalTok{ url}
+\NormalTok{  ) }\OperatorTok{%>%}
+\StringTok{  }\NormalTok{dplyr}\OperatorTok{::}\KeywordTok{select}\NormalTok{(}
+\NormalTok{    slugSeason, yearSeason,}
+\NormalTok{    slugPlayerBREF, }\KeywordTok{everything}\NormalTok{()}
+\NormalTok{  )}
+\KeywordTok{head}\NormalTok{(df, }\DecValTok{5}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## # A tibble: 5 x 35
+##   slugSeason yearSeason slugPlayerBREF numberPlayer namePlayer slugPosition
+##   <chr>           <dbl> <chr>                 <dbl> <chr>      <chr>       
+## 1 2018-19          2019 abrinal01                 1 Alex Abri~ SG          
+## 2 2018-19          2019 acyqu01                   2 Quincy Acy PF          
+## 3 2018-19          2019 adamsja01                 3 Jaylen Ad~ PG          
+## 4 2018-19          2019 adamsst01                 4 Steven Ad~ C           
+## 5 2018-19          2019 adebaba01                 5 Bam Adeba~ C           
+## # ... with 29 more variables: agePlayer <dbl>, slugTeamBREF <chr>,
+## #   countGames <dbl>, countGamesStarted <dbl>, minutes <dbl>, fgm <dbl>,
+## #   fga <dbl>, pctFG <dbl>, fg3m <dbl>, fg3a <dbl>, pctFG3 <dbl>,
+## #   fg2m <dbl>, fg2a <dbl>, pctFG2 <dbl>, pctEFG <dbl>, ftm <dbl>,
+## #   fta <dbl>, pctFT <dbl>, orb <dbl>, drb <dbl>, trb <dbl>, ast <dbl>,
+## #   stl <dbl>, blk <dbl>, tov <dbl>, pf <dbl>, pts <dbl>,
+## #   isHOFPlayer <lgl>, urlData <chr>
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{df <-}
+\StringTok{  }\NormalTok{df }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{mutate_at}\NormalTok{(}
+\NormalTok{    df }\OperatorTok{%>%}\StringTok{ }\NormalTok{dplyr}\OperatorTok{::}\KeywordTok{select}\NormalTok{(dplyr}\OperatorTok{::}\KeywordTok{matches}\NormalTok{(}\StringTok{"pct"}\NormalTok{)) }\OperatorTok{%>%}\StringTok{ }\KeywordTok{names}\NormalTok{(),}
+    \KeywordTok{funs}\NormalTok{(}\KeywordTok{ifelse}\NormalTok{(. }\OperatorTok{>=}\StringTok{ }\DecValTok{1}\NormalTok{, . }\OperatorTok{/}\StringTok{ }\DecValTok{100}\NormalTok{, .))}
+\NormalTok{  ) }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{mutate}\NormalTok{(}\DataTypeTok{typeData =}\NormalTok{ name_slug) }\OperatorTok{%>%}
+\StringTok{  }\NormalTok{dplyr}\OperatorTok{::}\KeywordTok{select}\NormalTok{(typeData, }\KeywordTok{everything}\NormalTok{())}
+
+\ControlFlowTok{if}\NormalTok{ (return_message) \{}
+        \KeywordTok{list}\NormalTok{(}\StringTok{"parsed "}\NormalTok{, url) }\OperatorTok{%>%}
+\StringTok{          }\NormalTok{purrr}\OperatorTok{::}\KeywordTok{reduce}\NormalTok{(paste0) }\OperatorTok{%>%}
+\StringTok{          }\KeywordTok{cat}\NormalTok{(}\DataTypeTok{fill =}\NormalTok{ T)}
+\NormalTok{      \}}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## parsed http://www.basketball-reference.com/leagues/NBA_2019_per_game.html
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{df <-}\StringTok{ }
+\StringTok{  }\NormalTok{df }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{select}\NormalTok{(}\OperatorTok{-}\KeywordTok{one_of}\NormalTok{(}\StringTok{"numberPlayer"}\NormalTok{))}
+\KeywordTok{head}\NormalTok{(df, }\DecValTok{5}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## # A tibble: 5 x 35
+##   typeData slugSeason yearSeason slugPlayerBREF namePlayer slugPosition
+##   <chr>    <chr>           <dbl> <chr>          <chr>      <chr>       
+## 1 PerGame  2018-19          2019 abrinal01      Alex Abri~ SG          
+## 2 PerGame  2018-19          2019 acyqu01        Quincy Acy PF          
+## 3 PerGame  2018-19          2019 adamsja01      Jaylen Ad~ PG          
+## 4 PerGame  2018-19          2019 adamsst01      Steven Ad~ C           
+## 5 PerGame  2018-19          2019 adebaba01      Bam Adeba~ C           
+## # ... with 29 more variables: agePlayer <dbl>, slugTeamBREF <chr>,
+## #   countGames <dbl>, countGamesStarted <dbl>, minutes <dbl>, fgm <dbl>,
+## #   fga <dbl>, pctFG <dbl>, fg3m <dbl>, fg3a <dbl>, pctFG3 <dbl>,
+## #   fg2m <dbl>, fg2a <dbl>, pctFG2 <dbl>, pctEFG <dbl>, ftm <dbl>,
+## #   fta <dbl>, pctFT <dbl>, orb <dbl>, drb <dbl>, trb <dbl>, ast <dbl>,
+## #   stl <dbl>, blk <dbl>, tov <dbl>, pf <dbl>, pts <dbl>,
+## #   isHOFPlayer <lgl>, urlData <chr>
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{df <-}\StringTok{ }
+\StringTok{  }\NormalTok{df }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{mutate_if}\NormalTok{(is.numeric, }
+            \KeywordTok{list}\NormalTok{(}\ControlFlowTok{function}\NormalTok{(x) \{}
+          \KeywordTok{ifelse}\NormalTok{(}\KeywordTok{is.na}\NormalTok{(x), }\DecValTok{0}\NormalTok{, x)}
+\NormalTok{        \}))}
+\KeywordTok{head}\NormalTok{(df,}\DecValTok{5}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## # A tibble: 5 x 35
+##   typeData slugSeason yearSeason slugPlayerBREF namePlayer slugPosition
+##   <chr>    <chr>           <dbl> <chr>          <chr>      <chr>       
+## 1 PerGame  2018-19          2019 abrinal01      Alex Abri~ SG          
+## 2 PerGame  2018-19          2019 acyqu01        Quincy Acy PF          
+## 3 PerGame  2018-19          2019 adamsja01      Jaylen Ad~ PG          
+## 4 PerGame  2018-19          2019 adamsst01      Steven Ad~ C           
+## 5 PerGame  2018-19          2019 adebaba01      Bam Adeba~ C           
+## # ... with 29 more variables: agePlayer <dbl>, slugTeamBREF <chr>,
+## #   countGames <dbl>, countGamesStarted <dbl>, minutes <dbl>, fgm <dbl>,
+## #   fga <dbl>, pctFG <dbl>, fg3m <dbl>, fg3a <dbl>, pctFG3 <dbl>,
+## #   fg2m <dbl>, fg2a <dbl>, pctFG2 <dbl>, pctEFG <dbl>, ftm <dbl>,
+## #   fta <dbl>, pctFT <dbl>, orb <dbl>, drb <dbl>, trb <dbl>, ast <dbl>,
+## #   stl <dbl>, blk <dbl>, tov <dbl>, pf <dbl>, pts <dbl>,
+## #   isHOFPlayer <lgl>, urlData <chr>
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{# Column Names getting pulled back into .get_data_bref}
+\KeywordTok{colnames}\NormalTok{(df)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##  [1] "typeData"          "slugSeason"        "yearSeason"       
+##  [4] "slugPlayerBREF"    "namePlayer"        "slugPosition"     
+##  [7] "agePlayer"         "slugTeamBREF"      "countGames"       
+## [10] "countGamesStarted" "minutes"           "fgm"              
+## [13] "fga"               "pctFG"             "fg3m"             
+## [16] "fg3a"              "pctFG3"            "fg2m"             
+## [19] "fg2a"              "pctFG2"            "pctEFG"           
+## [22] "ftm"               "fta"               "pctFT"            
+## [25] "orb"               "drb"               "trb"              
+## [28] "ast"               "stl"               "blk"              
+## [31] "tov"               "pf"                "pts"              
+## [34] "isHOFPlayer"       "urlData"
+\end{verbatim}
+
+\paragraph{Assign Bref Data}\label{assign-bref-data}
+
+\subparagraph{Full Function}\label{full-function-2}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{#' Assign nested BREF data to environment}
+\CommentTok{#'}
+\CommentTok{#' @param data a \textbackslash{}code\{tibble\} of tables}
+\CommentTok{#' @param type type of BREF data are `teams` and `players`}
+\CommentTok{#' @param widen_data if \textbackslash{}code\{TRUE\} widens data}
+\CommentTok{#' @param join_data if \textbackslash{}code\{TRUE\} joins tables}
+\CommentTok{#' @param nest_data if \textbackslash{}code\{TRUE\} nests data}
+\CommentTok{#' @param assign_to_environment if \textbackslash{}code\{TRUE\} assigns data to your environment}
+\CommentTok{#' @param include_all_nba if `TRUE` include all NBA teams}
+\CommentTok{#'}
+\CommentTok{#' @return a `tibble`}
+\CommentTok{#' @export}
+\CommentTok{#' @import dplyr purrr stringr tibble tidyr}
+\CommentTok{#' @examples}
+\NormalTok{assign_bref_data <-}
+\StringTok{  }\NormalTok{memoise}\OperatorTok{::}\KeywordTok{memoise}\NormalTok{(}\ControlFlowTok{function}\NormalTok{(data,}
+           \DataTypeTok{type =} \StringTok{"Players"}\NormalTok{,}
+           \DataTypeTok{widen_data =} \OtherTok{TRUE}\NormalTok{,}
+           \DataTypeTok{include_all_nba =}\NormalTok{ F,}
+           \DataTypeTok{join_data =} \OtherTok{TRUE}\NormalTok{,}
+           \DataTypeTok{nest_data =} \OtherTok{FALSE}\NormalTok{,}
+           \DataTypeTok{assign_to_environment =} \OtherTok{TRUE}\NormalTok{) \{}
+\NormalTok{    type_slug <-}
+\StringTok{      }\NormalTok{type }\OperatorTok{%>%}\StringTok{ }\KeywordTok{str_to_lower}\NormalTok{()}
+
+    \ControlFlowTok{if}\NormalTok{ (}\OperatorTok{!}\NormalTok{type_slug }\OperatorTok{%in%}\StringTok{ }\KeywordTok{c}\NormalTok{(}\StringTok{'players'}\NormalTok{, }\StringTok{'teams'}\NormalTok{)) \{}
+      \KeywordTok{stop}\NormalTok{(}\StringTok{"Type can only be players or teams"}\NormalTok{)}
+\NormalTok{    \}}
+
+    \ControlFlowTok{if}\NormalTok{ (type_slug }\OperatorTok{==}\StringTok{ "players"}\NormalTok{) \{}
+\NormalTok{      data <-}
+\StringTok{        }\KeywordTok{.assign.bref.players}\NormalTok{(}
+          \DataTypeTok{all_data =}\NormalTok{ data,}
+          \DataTypeTok{widen_data =}\NormalTok{ widen_data,}
+          \DataTypeTok{join_data =}\NormalTok{ join_data,}
+          \DataTypeTok{include_all_nba =}\NormalTok{ include_all_nba,}
+          \DataTypeTok{assign_to_environment =}\NormalTok{ assign_to_environment}
+\NormalTok{        )}
+\NormalTok{    \}}
+
+    \ControlFlowTok{if}\NormalTok{ (type_slug }\OperatorTok{==}\StringTok{ "teams"}\NormalTok{) \{}
+\NormalTok{      data <-}
+\StringTok{        }\KeywordTok{.assign.bref.teams}\NormalTok{(}
+          \DataTypeTok{all_data =}\NormalTok{ data,}
+          \DataTypeTok{widen_data =}\NormalTok{ widen_data,}
+          \DataTypeTok{join_data =}\NormalTok{ join_data,}
+          \DataTypeTok{assign_to_environment =}\NormalTok{ assign_to_environment}
+\NormalTok{        )}
+\NormalTok{    \}}
+
+    \ControlFlowTok{if}\NormalTok{ (nest_data) \{}
+      \ControlFlowTok{if}\NormalTok{ (data }\OperatorTok{%>%}\StringTok{ }\NormalTok{tibble}\OperatorTok{::}\KeywordTok{has_name}\NormalTok{(}\StringTok{"slugSeason"}\NormalTok{)) \{}
+\NormalTok{        data <-}
+\StringTok{          }\NormalTok{data }\OperatorTok{%>%}
+\StringTok{          }\KeywordTok{mutate}\NormalTok{(}\DataTypeTok{typeBREFData =}\NormalTok{ type) }\OperatorTok{%>%}
+\StringTok{          }\KeywordTok{nest}\NormalTok{(}\OperatorTok{-}\KeywordTok{c}\NormalTok{(slugSeason, typeBREFData, yearSeason), }\DataTypeTok{.key =}\NormalTok{ dataSeason)}
+\NormalTok{      \}}
+\NormalTok{    \}}
+\NormalTok{    data}
+\NormalTok{  \})}
+\end{Highlighting}
+\end{Shaded}
+
+\subparagraph{Function Breakdown}\label{function-breakdown-2}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{# Arguments}
+\NormalTok{type =}\StringTok{ "Players"}
+\NormalTok{include_all_nba <-}\StringTok{ }\NormalTok{F}
+\NormalTok{only_totals <-}\StringTok{ }\OtherTok{TRUE}
+\NormalTok{assign_to_environment <-}\StringTok{ }\OtherTok{TRUE}
+\NormalTok{widen_data <-}\StringTok{ }\OtherTok{TRUE}
+\NormalTok{join_data <-}\StringTok{ }\OtherTok{TRUE}
+
+
+\NormalTok{ type_slug <-}
+\StringTok{      }\NormalTok{type }\OperatorTok{%>%}\StringTok{ }\KeywordTok{str_to_lower}\NormalTok{()}
+
+    \ControlFlowTok{if}\NormalTok{ (}\OperatorTok{!}\NormalTok{type_slug }\OperatorTok{%in%}\StringTok{ }\KeywordTok{c}\NormalTok{(}\StringTok{'players'}\NormalTok{, }\StringTok{'teams'}\NormalTok{)) \{}
+      \KeywordTok{stop}\NormalTok{(}\StringTok{"Type can only be players or teams"}\NormalTok{)}
+\NormalTok{    \}}
+
+    \ControlFlowTok{if}\NormalTok{ (type_slug }\OperatorTok{==}\StringTok{ "players"}\NormalTok{) \{}
+\NormalTok{      data <-}
+\StringTok{        }\KeywordTok{.assign.bref.players}\NormalTok{(}
+          \DataTypeTok{all_data =}\NormalTok{ all_data,}
+          \DataTypeTok{widen_data =}\NormalTok{ widen_data,}
+          \DataTypeTok{join_data =}\NormalTok{ join_data,}
+          \DataTypeTok{include_all_nba =}\NormalTok{ include_all_nba,}
+          \DataTypeTok{assign_to_environment =}\NormalTok{ assign_to_environment}
+\NormalTok{        )}
+\NormalTok{    \}}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## PerGame
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{head}\NormalTok{(data,}\DecValTok{5}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## # A tibble: 5 x 47
+##   slugSeason namePlayer groupPosition yearSeason slugPosition idPlayerNBA
+##   <chr>      <chr>      <chr>              <dbl> <chr>              <int>
+## 1 2017-18    Aaron Bro~ G                   2017 PG                201166
+## 2 2017-18    Aaron Gor~ F                   2017 PF                203932
+## 3 2018-19    Aaron Gor~ F                   2018 PF                203932
+## 4 2017-18    Aaron Har~ G                   2017 SG               1626151
+## 5 2018-19    Aaron Hol~ G                   2018 PG               1628988
+## # ... with 41 more variables: namePlayerBREF <chr>, slugPlayerBREF <chr>,
+## #   yearSeasonFirst <dbl>, urlPlayerThumbnail <chr>,
+## #   urlPlayerHeadshot <chr>, urlPlayerPhoto <chr>, urlPlayerStats <chr>,
+## #   urlPlayerActionPhoto <chr>, isSeasonCurrent <lgl>,
+## #   slugPlayerSeason <chr>, agePlayer <dbl>, slugTeamBREF <chr>,
+## #   countGames <dbl>, countGamesStarted <dbl>, pctFG <dbl>, pctFG3 <dbl>,
+## #   pctFG2 <dbl>, pctEFG <dbl>, pctFT <dbl>, isHOFPlayer <lgl>,
+## #   slugTeamsBREF <chr>, minutesPerGame <dbl>, fgmPerGame <dbl>,
+## #   fgaPerGame <dbl>, fg3mPerGame <dbl>, fg3aPerGame <dbl>,
+## #   fg2mPerGame <dbl>, fg2aPerGame <dbl>, ftmPerGame <dbl>,
+## #   ftaPerGame <dbl>, orbPerGame <dbl>, drbPerGame <dbl>,
+## #   trbPerGame <dbl>, astPerGame <dbl>, stlPerGame <dbl>,
+## #   blkPerGame <dbl>, tovPerGame <dbl>, pfPerGame <dbl>, ptsPerGame <dbl>,
+## #   countTeamsPlayerSeasonPerGame <dbl>, urlPlayerBREF <chr>
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{glimpse}\NormalTok{(data)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Observations: 1,067
+## Variables: 47
+## $ slugSeason                    <chr> "2017-18", "2017-18", "2018-19",...
+## $ namePlayer                    <chr> "Aaron Brooks", "Aaron Gordon", ...
+## $ groupPosition                 <chr> "G", "F", "F", "G", "G", "G", "F...
+## $ yearSeason                    <dbl> 2017, 2017, 2018, 2017, 2018, 20...
+## $ slugPosition                  <chr> "PG", "PF", "PF", "SG", "PG", "P...
+## $ idPlayerNBA                   <int> 201166, 203932, 203932, 1626151,...
+## $ namePlayerBREF                <chr> "Aaron Brooks", "Aaron Gordon", ...
+## $ slugPlayerBREF                <chr> "brookaa01", "gordoaa01", "gordo...
+## $ yearSeasonFirst               <dbl> 2007, 2014, 2014, 2015, 2018, 20...
+## $ urlPlayerThumbnail            <chr> "https://stats.nba.com/media/pla...
+## $ urlPlayerHeadshot             <chr> "https://ak-static.cms.nba.com/w...
+## $ urlPlayerPhoto                <chr> "https://ak-static.cms.nba.com/w...
+## $ urlPlayerStats                <chr> "https://stats.nba.com/player/20...
+## $ urlPlayerActionPhoto          <chr> "https://stats.nba.com/media/pla...
+## $ isSeasonCurrent               <lgl> FALSE, FALSE, FALSE, FALSE, FALS...
+## $ slugPlayerSeason              <chr> "brookaa01_2018", "gordoaa01_201...
+## $ agePlayer                     <dbl> 33, 22, 23, 23, 22, 31, 24, 25, ...
+## $ slugTeamBREF                  <chr> "MIN", "ORL", "ORL", "DAL", "IND...
+## $ countGames                    <dbl> 32, 58, 78, 9, 50, 1, 48, 61, 5,...
+## $ countGamesStarted             <dbl> 1, 57, 78, 3, 0, 0, 1, 1, 0, 67,...
+## $ pctFG                         <dbl> 0.406, 0.434, 0.449, 0.275, 0.40...
+## $ pctFG3                        <dbl> 0.355, 0.336, 0.349, 0.209, 0.33...
+## $ pctFG2                        <dbl> 0.447, 0.497, 0.499, 0.385, 0.45...
+## $ pctEFG                        <dbl> 0.486, 0.500, 0.507, 0.341, 0.48...
+## $ pctFT                         <dbl> 0.727, 0.698, 0.731, 0.765, 0.82...
+## $ isHOFPlayer                   <lgl> FALSE, FALSE, FALSE, FALSE, FALS...
+## $ slugTeamsBREF                 <chr> "MIN", "ORL", "ORL", "DAL", "IND...
+## $ minutesPerGame                <dbl> 5.9, 32.9, 33.8, 25.9, 12.9, 35....
+## $ fgmPerGame                    <dbl> 0.9, 6.5, 6.0, 2.1, 2.1, 3.0, 1....
+## $ fgaPerGame                    <dbl> 2.2, 14.9, 13.4, 7.7, 5.2, 9.0, ...
+## $ fg3mPerGame                   <dbl> 0.3, 2.0, 1.6, 1.0, 0.9, 1.0, 0....
+## $ fg3aPerGame                   <dbl> 1.0, 5.9, 4.4, 4.8, 2.5, 4.0, 1....
+## $ fg2mPerGame                   <dbl> 0.5, 4.5, 4.5, 1.1, 1.2, 2.0, 0....
+## $ fg2aPerGame                   <dbl> 1.2, 9.0, 9.0, 2.9, 2.7, 5.0, 1....
+## $ ftmPerGame                    <dbl> 0.3, 2.7, 2.4, 1.4, 0.8, 1.0, 0....
+## $ ftaPerGame                    <dbl> 0.3, 3.9, 3.2, 1.9, 1.0, 2.0, 0....
+## $ orbPerGame                    <dbl> 0.2, 1.5, 1.7, 0.4, 0.1, 2.0, 0....
+## $ drbPerGame                    <dbl> 0.3, 6.4, 5.7, 2.2, 1.2, 1.0, 1....
+## $ trbPerGame                    <dbl> 0.5, 7.9, 7.4, 2.7, 1.3, 3.0, 1....
+## $ astPerGame                    <dbl> 0.6, 2.3, 3.7, 1.2, 1.7, 1.0, 0....
+## $ stlPerGame                    <dbl> 0.2, 1.0, 0.7, 1.0, 0.4, 0.0, 0....
+## $ blkPerGame                    <dbl> 0.0, 0.8, 0.7, 0.2, 0.3, 0.0, 0....
+## $ tovPerGame                    <dbl> 0.3, 1.8, 2.1, 0.3, 0.8, 1.0, 0....
+## $ pfPerGame                     <dbl> 0.9, 1.9, 2.2, 3.0, 1.4, 4.0, 0....
+## $ ptsPerGame                    <dbl> 2.3, 17.6, 16.0, 6.7, 5.9, 8.0, ...
+## $ countTeamsPlayerSeasonPerGame <dbl> 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,...
+## $ urlPlayerBREF                 <chr> "http://www.basketball-reference...
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{# Check Nest Data}
+\NormalTok{nest_data =}\StringTok{ }\OtherTok{TRUE}
+
+    \ControlFlowTok{if}\NormalTok{ (nest_data) \{}
+      \ControlFlowTok{if}\NormalTok{ (data }\OperatorTok{%>%}\StringTok{ }\NormalTok{tibble}\OperatorTok{::}\KeywordTok{has_name}\NormalTok{(}\StringTok{"slugSeason"}\NormalTok{)) \{}
+\NormalTok{        data <-}
+\StringTok{          }\NormalTok{data }\OperatorTok{%>%}
+\StringTok{          }\KeywordTok{mutate}\NormalTok{(}\DataTypeTok{typeBREFData =}\NormalTok{ type) }\OperatorTok{%>%}
+\StringTok{          }\KeywordTok{nest}\NormalTok{(}\OperatorTok{-}\KeywordTok{c}\NormalTok{(slugSeason, typeBREFData, yearSeason), }\DataTypeTok{.key =}\NormalTok{ dataSeason)}
+\NormalTok{      \}}
+\NormalTok{    \}}
+\KeywordTok{glimpse}\NormalTok{(data)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Observations: 2
+## Variables: 4
+## $ slugSeason   <chr> "2017-18", "2018-19"
+## $ yearSeason   <dbl> 2017, 2018
+## $ typeBREFData <chr> "Players", "Players"
+## $ dataSeason   <list> [<tbl_df[539 x 45]>, <tbl_df[528 x 45]>]
+\end{verbatim}
+
+\paragraph{.Assign Bref Players}\label{assign-bref-players}
+
+\subparagraph{Full Function}\label{full-function-3}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{.assign.bref.players <-}
+\StringTok{  }\NormalTok{memoise}\OperatorTok{::}\KeywordTok{memoise}\NormalTok{(}\ControlFlowTok{function}\NormalTok{(all_data,}
+           \DataTypeTok{widen_data =} \OtherTok{TRUE}\NormalTok{,}
+           \DataTypeTok{join_data =}\NormalTok{ T,}
+           \DataTypeTok{include_all_nba =}\NormalTok{ T,}
+           \DataTypeTok{assign_to_environment =} \OtherTok{TRUE}\NormalTok{) \{}
+    \ControlFlowTok{if}\NormalTok{ (}\OperatorTok{!}\NormalTok{all_data }\OperatorTok{%>%}\StringTok{ }\NormalTok{tibble}\OperatorTok{::}\KeywordTok{has_name}\NormalTok{(}\StringTok{"typeData"}\NormalTok{)) \{}
+      \KeywordTok{return}\NormalTok{(all_data)}
+\NormalTok{    \}}
+
+\NormalTok{    table_names <-}
+\StringTok{      }\NormalTok{all_data }\OperatorTok{%>%}\StringTok{ }\KeywordTok{pull}\NormalTok{(typeData) }\OperatorTok{%>%}\StringTok{ }\KeywordTok{unique}\NormalTok{()}
+
+\NormalTok{    all_data <-}
+\StringTok{      }\NormalTok{table_names }\OperatorTok{%>%}
+\StringTok{      }\KeywordTok{map_df}\NormalTok{(}\ControlFlowTok{function}\NormalTok{(table) \{}
+\NormalTok{        table }\OperatorTok{%>%}\StringTok{ }\KeywordTok{cat}\NormalTok{(}\DataTypeTok{fill =}\NormalTok{ T)}
+\NormalTok{        df_table <-}
+\StringTok{          }\NormalTok{all_data }\OperatorTok{%>%}
+\StringTok{          }\KeywordTok{filter}\NormalTok{(typeData }\OperatorTok{==}\StringTok{ }\NormalTok{table) }\OperatorTok{%>%}
+\StringTok{          }\KeywordTok{unnest}\NormalTok{()}
+
+        \ControlFlowTok{if}\NormalTok{ (df_table }\OperatorTok{%>%}\StringTok{ }\NormalTok{tibble}\OperatorTok{::}\KeywordTok{has_name}\NormalTok{(}\StringTok{"yearSeason"}\NormalTok{)) \{}
+\NormalTok{          df_table <-}
+\StringTok{            }\NormalTok{df_table }\OperatorTok{%>%}
+\StringTok{            }\KeywordTok{mutate}\NormalTok{(}\DataTypeTok{yearSeason =}\NormalTok{ yearSeason }\OperatorTok{-}\StringTok{ }\DecValTok{1}\NormalTok{)}
+\NormalTok{        \}}
+
+\NormalTok{        df_table <-}
+\StringTok{          }\NormalTok{df_table }\OperatorTok{%>%}
+\StringTok{          }\KeywordTok{.resolve.players}\NormalTok{(}\DataTypeTok{site =} \StringTok{"bref"}\NormalTok{)}
+
+        \ControlFlowTok{if}\NormalTok{ (}\OperatorTok{!}\NormalTok{table }\OperatorTok{==}\StringTok{ "Advanced"}\NormalTok{) \{}
+\NormalTok{          df_table <-}
+\StringTok{            }\NormalTok{df_table }\OperatorTok{%>%}
+\StringTok{            }\KeywordTok{gather_data}\NormalTok{(}
+              \DataTypeTok{numeric_ids =} \KeywordTok{c}\NormalTok{(}
+                \StringTok{"year"}\NormalTok{,}
+                \StringTok{"agePlayer"}\NormalTok{,}
+                \StringTok{"pct"}\NormalTok{,}
+                \StringTok{"countGames"}\NormalTok{,}
+                \StringTok{"ratio"}\NormalTok{,}
+                \StringTok{"idPlayer"}
+\NormalTok{              ),}
+              \DataTypeTok{use_logical_keys =} \OtherTok{TRUE}\NormalTok{,}
+              \DataTypeTok{use_factor_keys =}\NormalTok{ T,}
+              \DataTypeTok{use_date_keys =}\NormalTok{ F,}
+              \DataTypeTok{unite_columns =} \KeywordTok{list}\NormalTok{(}
+                \DataTypeTok{new_column =} \StringTok{"item"}\NormalTok{,}
+                \DataTypeTok{column_1 =} \StringTok{"item"}\NormalTok{,}
+                \DataTypeTok{column_2 =} \StringTok{"typeData"}\NormalTok{,}
+                \DataTypeTok{sep =} \StringTok{""}
+\NormalTok{              )}
+\NormalTok{            )}
+\NormalTok{          col_order <-}
+\StringTok{            }\KeywordTok{c}\NormalTok{(}\KeywordTok{names}\NormalTok{(df_table)[}\OperatorTok{!}\KeywordTok{names}\NormalTok{(df_table) }\OperatorTok{%>%}\StringTok{ }\KeywordTok{str_detect}\NormalTok{(}\StringTok{"value|item"}\NormalTok{)], }\StringTok{"item"}\NormalTok{, }\StringTok{"value"}\NormalTok{)}
+
+\NormalTok{          df_table <-}
+\StringTok{            }\NormalTok{df_table }\OperatorTok{%>%}
+\StringTok{            }\KeywordTok{select}\NormalTok{(}\KeywordTok{one_of}\NormalTok{(col_order))}
+\NormalTok{        \} }\ControlFlowTok{else}\NormalTok{ \{}
+\NormalTok{          df_table <-}
+\StringTok{            }\NormalTok{df_table }\OperatorTok{%>%}
+\StringTok{            }\KeywordTok{gather_data}\NormalTok{(}
+              \DataTypeTok{numeric_ids =} \KeywordTok{c}\NormalTok{(}\StringTok{"year"}\NormalTok{, }\StringTok{"agePlayer"}\NormalTok{, }\StringTok{"countGames"}\NormalTok{, }\StringTok{"id"}\NormalTok{),}
+              \DataTypeTok{use_logical_keys =} \OtherTok{TRUE}\NormalTok{,}
+              \DataTypeTok{use_factor_keys =}\NormalTok{ T,}
+              \DataTypeTok{use_date_keys =}\NormalTok{ F,}
+              \DataTypeTok{unite_columns =} \OtherTok{NULL}
+\NormalTok{            )}
+
+\NormalTok{          col_order <-}
+\StringTok{            }\KeywordTok{c}\NormalTok{(}\KeywordTok{names}\NormalTok{(df_table)[}\OperatorTok{!}\KeywordTok{names}\NormalTok{(df_table) }\OperatorTok{%>%}\StringTok{ }\KeywordTok{str_detect}\NormalTok{(}\StringTok{"value|item"}\NormalTok{)], }\StringTok{"item"}\NormalTok{, }\StringTok{"value"}\NormalTok{)}
+
+\NormalTok{          df_table <-}
+\StringTok{            }\NormalTok{df_table }\OperatorTok{%>%}
+\StringTok{            }\KeywordTok{select}\NormalTok{(}\KeywordTok{one_of}\NormalTok{(col_order))}
+\NormalTok{        \}}
+
+\NormalTok{        df_table <-}
+\StringTok{          }\NormalTok{df_table }\OperatorTok{%>%}
+\StringTok{          }\NormalTok{dplyr}\OperatorTok{::}\KeywordTok{select}\NormalTok{(}\OperatorTok{-}\KeywordTok{one_of}\NormalTok{(}\StringTok{"typeData"}\NormalTok{)) }\OperatorTok{%>%}
+\StringTok{          }\KeywordTok{suppressWarnings}\NormalTok{()}
+
+        \ControlFlowTok{if}\NormalTok{ (df_table }\OperatorTok{%>%}\StringTok{ }\NormalTok{tibble}\OperatorTok{::}\KeywordTok{has_name}\NormalTok{(}\StringTok{"yearSeasonStart"}\NormalTok{)) \{}
+\NormalTok{          df_table <-}
+\StringTok{            }\NormalTok{df_table }\OperatorTok{%>%}
+\StringTok{            }\KeywordTok{rename}\NormalTok{(}\DataTypeTok{yearSeason =}\NormalTok{ yearSeasonStart) }\OperatorTok{%>%}
+\StringTok{            }\KeywordTok{mutate}\NormalTok{(}\DataTypeTok{yearSeason =}\NormalTok{ yearSeason }\OperatorTok{+}\StringTok{ }\DecValTok{1}\NormalTok{)}
+\NormalTok{        \}}
+
+        \ControlFlowTok{if}\NormalTok{ (widen_data) \{}
+\NormalTok{          df_table <-}
+\StringTok{            }\NormalTok{df_table }\OperatorTok{%>%}
+\StringTok{            }\KeywordTok{spread_data}\NormalTok{(}
+              \DataTypeTok{variable_name =} \StringTok{"item"}\NormalTok{,}
+              \DataTypeTok{value_name =} \StringTok{"value"}\NormalTok{,}
+              \DataTypeTok{perserve_order =} \OtherTok{TRUE}\NormalTok{,}
+              \DataTypeTok{unite_columns =} \OtherTok{NULL}\NormalTok{,}
+              \DataTypeTok{separate_columns =} \OtherTok{NULL}
+\NormalTok{            )}
+\NormalTok{        \}}
+
+        \ControlFlowTok{if}\NormalTok{ (df_table }\OperatorTok{%>%}\StringTok{ }\NormalTok{tibble}\OperatorTok{::}\KeywordTok{has_name}\NormalTok{(}\StringTok{"minutesAdvanced"}\NormalTok{)) \{}
+\NormalTok{          df_table <-}
+\StringTok{            }\NormalTok{df_table }\OperatorTok{%>%}
+\StringTok{            }\NormalTok{dplyr}\OperatorTok{::}\KeywordTok{rename}\NormalTok{(}\DataTypeTok{minutesTotals =}\NormalTok{ minutesAdvanced)}
+\NormalTok{        \}}
+
+        \ControlFlowTok{if}\NormalTok{ (assign_to_environment) \{}
+\NormalTok{          table_name <-}
+\StringTok{            }\NormalTok{glue}\OperatorTok{::}\KeywordTok{glue}\NormalTok{(}\StringTok{"dataBREFPlayer\{table\}"}\NormalTok{)}
+
+          \KeywordTok{assign}\NormalTok{(}\DataTypeTok{x =}\NormalTok{ table_name,}
+                 \DataTypeTok{value =} \KeywordTok{eval}\NormalTok{(df_table),}
+                 \DataTypeTok{envir =}\NormalTok{ .GlobalEnv)}
+\NormalTok{        \}}
+        \KeywordTok{tibble}\NormalTok{(}\DataTypeTok{nameTable =}\NormalTok{ table, }\DataTypeTok{dataTable =} \KeywordTok{list}\NormalTok{(df_table))}
+\NormalTok{      \}) }\OperatorTok{%>%}
+\StringTok{      }\KeywordTok{suppressMessages}\NormalTok{()}
+
+    \ControlFlowTok{if}\NormalTok{ (join_data) \{}
+      \ControlFlowTok{if}\NormalTok{ (widen_data) \{}
+\NormalTok{        all_data <-}
+\StringTok{          }\NormalTok{all_data }\OperatorTok{%>%}
+\StringTok{          }\KeywordTok{select}\NormalTok{(dataTable) }\OperatorTok{%>%}
+\StringTok{          }\NormalTok{purrr}\OperatorTok{::}\KeywordTok{flatten}\NormalTok{() }\OperatorTok{%>%}
+\StringTok{          }\NormalTok{purrr}\OperatorTok{::}\KeywordTok{reduce}\NormalTok{(left_join) }\OperatorTok{%>%}
+\StringTok{          }\KeywordTok{suppressMessages}\NormalTok{() }\OperatorTok{%>%}
+\StringTok{          }\NormalTok{dplyr}\OperatorTok{::}\KeywordTok{select}\NormalTok{(yearSeason,}
+\NormalTok{                        slugSeason,}
+\NormalTok{                        namePlayer,}
+\NormalTok{                        slugPosition,}
+                        \KeywordTok{everything}\NormalTok{())}
+\NormalTok{      \}  }\ControlFlowTok{else}\NormalTok{ \{}
+\NormalTok{        all_data <-}
+\StringTok{          }\NormalTok{all_data }\OperatorTok{%>%}
+\StringTok{          }\NormalTok{purrr}\OperatorTok{::}\KeywordTok{reduce}\NormalTok{(bind_rows) }\OperatorTok{%>%}
+\StringTok{          }\KeywordTok{suppressMessages}\NormalTok{()}
+
+\NormalTok{        col_order <-}
+\StringTok{          }\KeywordTok{c}\NormalTok{(}\KeywordTok{names}\NormalTok{(all_data)[}\OperatorTok{!}\KeywordTok{names}\NormalTok{(all_data) }\OperatorTok{%>%}\StringTok{ }\KeywordTok{str_detect}\NormalTok{(}\StringTok{"value|item"}\NormalTok{)], }\StringTok{"item"}\NormalTok{, }\StringTok{"value"}\NormalTok{)}
+
+\NormalTok{        all_data <-}
+\StringTok{          }\NormalTok{all_data }\OperatorTok{%>%}
+\StringTok{          }\KeywordTok{select}\NormalTok{(}\KeywordTok{one_of}\NormalTok{(col_order))}
+\NormalTok{      \}}
+
+\NormalTok{      all_data <-}
+\StringTok{        }\NormalTok{all_data }\OperatorTok{%>%}
+\StringTok{        }\KeywordTok{mutate}\NormalTok{(}
+          \DataTypeTok{groupPosition =} \KeywordTok{ifelse}\NormalTok{(}
+\NormalTok{            slugPosition }\OperatorTok{%>%}\StringTok{ }\KeywordTok{nchar}\NormalTok{() }\OperatorTok{==}\StringTok{ }\DecValTok{1}\NormalTok{,}
+\NormalTok{            slugPosition,}
+\NormalTok{            slugPosition }\OperatorTok{%>%}\StringTok{ }\KeywordTok{substr}\NormalTok{(}\DecValTok{2}\NormalTok{, }\DecValTok{2}\NormalTok{)}
+\NormalTok{          ),}
+          \DataTypeTok{isHOFPlayer =} \KeywordTok{ifelse}\NormalTok{(isHOFPlayer }\OperatorTok{%>%}\StringTok{ }\KeywordTok{is.na}\NormalTok{(), }\OtherTok{FALSE}\NormalTok{, isHOFPlayer)}
+\NormalTok{        ) }\OperatorTok{%>%}
+\StringTok{        }\KeywordTok{mutate}\NormalTok{(}\DataTypeTok{groupPosition =} \KeywordTok{ifelse}\NormalTok{(groupPosition }\OperatorTok{==}\StringTok{ "-"}\NormalTok{,}
+                                      \KeywordTok{substr}\NormalTok{(slugPosition, }\DecValTok{1}\NormalTok{, }\DecValTok{1}\NormalTok{),}
+\NormalTok{                                      groupPosition)) }\OperatorTok{%>%}
+\StringTok{        }\NormalTok{dplyr}\OperatorTok{::}\KeywordTok{select}\NormalTok{(slugSeason}\OperatorTok{:}\NormalTok{namePlayer, groupPosition, }\KeywordTok{everything}\NormalTok{())}
+
+      \ControlFlowTok{if}\NormalTok{ (include_all_nba) \{}
+\NormalTok{        df_all_nba <-}
+\StringTok{          }\KeywordTok{all_nba_teams}\NormalTok{(}\DataTypeTok{return_message =}\NormalTok{ F)}
+
+\NormalTok{        all_data <-}
+\StringTok{          }\NormalTok{all_data }\OperatorTok{%>%}
+\StringTok{          }\KeywordTok{left_join}\NormalTok{(}
+\NormalTok{            df_all_nba }\OperatorTok{%>%}
+\StringTok{              }\NormalTok{dplyr}\OperatorTok{::}\KeywordTok{select}\NormalTok{(}
+\NormalTok{              slugPlayerSeason,}
+\NormalTok{              slugSeason,}
+\NormalTok{              groupAllNBA,}
+\NormalTok{              numberAllNBATeam,}
+\NormalTok{              isAllNBA}\OperatorTok{:}\NormalTok{isAllNBA3}
+\NormalTok{            )}
+\NormalTok{          ) }\OperatorTok{%>%}
+\StringTok{          }\KeywordTok{distinct}\NormalTok{() }\OperatorTok{%>%}
+\StringTok{          }\KeywordTok{suppressMessages}\NormalTok{()}
+
+\NormalTok{        all_data <-}
+\StringTok{          }\NormalTok{all_data }\OperatorTok{%>%}
+\StringTok{          }\NormalTok{tidyr}\OperatorTok{::}\KeywordTok{replace_na}\NormalTok{(}
+            \KeywordTok{list}\NormalTok{(}
+              \DataTypeTok{numberAllNBATeam =} \DecValTok{0}\NormalTok{,}
+              \DataTypeTok{isAllNBA =} \OtherTok{FALSE}\NormalTok{,}
+              \DataTypeTok{isAllNBA1 =} \OtherTok{FALSE}\NormalTok{,}
+              \DataTypeTok{isAllNBA2 =} \OtherTok{FALSE}\NormalTok{,}
+              \DataTypeTok{isAllNBA3 =} \OtherTok{FALSE}
+\NormalTok{            )}
+\NormalTok{          )}
+
+\NormalTok{        all_data <-}\StringTok{ }\NormalTok{all_data }\OperatorTok{%>%}
+\StringTok{          }\KeywordTok{mutate}\NormalTok{(}\DataTypeTok{groupAllNBA =} \KeywordTok{case_when}\NormalTok{(}
+            \KeywordTok{is.na}\NormalTok{(groupAllNBA) }\OperatorTok{&}\StringTok{ }\OperatorTok{!}\NormalTok{isSeasonCurrent }\OperatorTok{~}\StringTok{ "None"}\NormalTok{,}
+            \KeywordTok{is.na}\NormalTok{(groupAllNBA) }\OperatorTok{&}\StringTok{ }\NormalTok{isSeasonCurrent }\OperatorTok{~}\StringTok{ }\OtherTok{NA_character_}\NormalTok{,}
+            \OtherTok{TRUE} \OperatorTok{~}\StringTok{ }\NormalTok{groupAllNBA}
+\NormalTok{          ))}
+\NormalTok{      \}}
+
+\NormalTok{      all_data <-}
+\StringTok{        }\NormalTok{all_data }\OperatorTok{%>%}
+\StringTok{        }\KeywordTok{mutate}\NormalTok{(}
+          \DataTypeTok{urlPlayerBREF =} \KeywordTok{list}\NormalTok{(}
+            \StringTok{'http://www.basketball-reference.com/players/'}\NormalTok{,}
+\NormalTok{            slugPlayerBREF }\OperatorTok{%>%}\StringTok{ }\KeywordTok{substr}\NormalTok{(}\DataTypeTok{start =} \DecValTok{1}\NormalTok{, }\DataTypeTok{stop =} \DecValTok{1}\NormalTok{),}
+            \StringTok{'/'}\NormalTok{,}
+\NormalTok{            slugPlayerBREF,}
+            \StringTok{'.html'}
+\NormalTok{          ) }\OperatorTok{%>%}\StringTok{ }\NormalTok{purrr}\OperatorTok{::}\KeywordTok{reduce}\NormalTok{(paste0)}
+\NormalTok{        )}
+
+\NormalTok{      all_data <-}
+\StringTok{        }\NormalTok{all_data }\OperatorTok{%>%}
+\StringTok{        }\KeywordTok{mutate_if}\NormalTok{(is.numeric,}
+          \KeywordTok{list}\NormalTok{(}\ControlFlowTok{function}\NormalTok{(x)\{}\KeywordTok{ifelse}\NormalTok{(}\KeywordTok{is.na}\NormalTok{(x), }\DecValTok{0}\NormalTok{, x)\}))}
+\NormalTok{    \}}
+\NormalTok{    all_data}
+\NormalTok{  \})}
+\end{Highlighting}
+\end{Shaded}
+
+\subparagraph{Function Breakdown}\label{function-breakdown-3}
+
+First part of Nested Function
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{# Arguments}
+\NormalTok{widen_data =}\StringTok{ }\OtherTok{TRUE}
+\NormalTok{join_data =}\StringTok{ }\OtherTok{TRUE}
+\NormalTok{include_all_nba =}\StringTok{ }\OtherTok{FALSE}
+\NormalTok{assign_to_environment =}\StringTok{ }\OtherTok{TRUE}
+
+\CommentTok{# Use elements of base function to get all_data}
+\NormalTok{seasons <-}\StringTok{ }\DecValTok{2018}\OperatorTok{:}\DecValTok{2019}
+\NormalTok{tables <-}\StringTok{ }\KeywordTok{c}\NormalTok{(}\StringTok{"advanced"}\NormalTok{, }\StringTok{"per_game"}\NormalTok{)}
+\NormalTok{include_all_nba <-}\StringTok{ }\NormalTok{F}
+\NormalTok{only_totals <-}\StringTok{ }\OtherTok{TRUE}
+\NormalTok{return_message <-}\StringTok{ }\OtherTok{TRUE}
+
+\NormalTok{tables <-}
+\StringTok{      }\NormalTok{tables }\OperatorTok{%>%}
+\StringTok{      }\KeywordTok{str_replace_all}\NormalTok{(}\StringTok{"}\CharTok{\textbackslash{}\textbackslash{}}\StringTok{ "}\NormalTok{, }\StringTok{"_"}\NormalTok{) }\OperatorTok{%>%}
+\StringTok{      }\KeywordTok{str_to_lower}\NormalTok{()}
+
+\NormalTok{    .get_data_bref_player_seasons_safe <-}
+\StringTok{      }\NormalTok{purrr}\OperatorTok{::}\KeywordTok{possibly}\NormalTok{(.get_data_bref_player_seasons, }\KeywordTok{tibble}\NormalTok{())}
+
+\NormalTok{    all_data <-}
+\StringTok{      }\NormalTok{tables }\OperatorTok{%>%}
+\StringTok{      }\KeywordTok{map_df}\NormalTok{(}\ControlFlowTok{function}\NormalTok{(x) \{}
+        \KeywordTok{.get_data_bref_player_seasons_safe}\NormalTok{(}
+          \DataTypeTok{table =}\NormalTok{ x,}
+          \DataTypeTok{seasons =}\NormalTok{ seasons,}
+          \DataTypeTok{only_totals =}\NormalTok{ only_totals,}
+          \DataTypeTok{return_message =}\NormalTok{ return_message}
+\NormalTok{        )}
+\NormalTok{      \})}
+
+    \KeywordTok{glimpse}\NormalTok{(all_data)}
+    \KeywordTok{head}\NormalTok{(all_data)}
+
+
+\CommentTok{# Does All Data have the name column Type Data, if not, return}
+    \ControlFlowTok{if}\NormalTok{ (}\OperatorTok{!}\NormalTok{all_data }\OperatorTok{%>%}\StringTok{ }\NormalTok{tibble}\OperatorTok{::}\KeywordTok{has_name}\NormalTok{(}\StringTok{"typeData"}\NormalTok{)) \{}
+      \KeywordTok{return}\NormalTok{(all_data)}
+\NormalTok{    \}}
+
+\NormalTok{    table_names <-}
+\StringTok{      }\NormalTok{all_data }\OperatorTok{%>%}\StringTok{ }\KeywordTok{pull}\NormalTok{(typeData) }\OperatorTok{%>%}\StringTok{ }\KeywordTok{unique}\NormalTok{()}
+\NormalTok{    tables_names}
+
+    \CommentTok{# all_data <-}
+    \CommentTok{#   table_names %>%}
+    \CommentTok{#   map_df(function(table) \{}
+    \CommentTok{#     table %>% cat(fill = T)}
+
+
+\CommentTok{# Breakdown of Map Function.  See Full Function Above}
+\NormalTok{    table =}\StringTok{ "PerGame"}
+
+\NormalTok{        df_table <-}
+\StringTok{          }\NormalTok{all_data }\OperatorTok{%>%}
+\StringTok{          }\KeywordTok{filter}\NormalTok{(typeData }\OperatorTok{==}\StringTok{ }\NormalTok{table) }\OperatorTok{%>%}
+\StringTok{          }\KeywordTok{unnest}\NormalTok{()}
+        \KeywordTok{glimpse}\NormalTok{(df_table)}
+
+\CommentTok{# If DF Table has Year Season}
+        \ControlFlowTok{if}\NormalTok{ (df_table }\OperatorTok{%>%}\StringTok{ }\NormalTok{tibble}\OperatorTok{::}\KeywordTok{has_name}\NormalTok{(}\StringTok{"yearSeason"}\NormalTok{)) \{}
+\NormalTok{          df_table <-}
+\StringTok{            }\NormalTok{df_table }\OperatorTok{%>%}
+\StringTok{            }\KeywordTok{mutate}\NormalTok{(}\DataTypeTok{yearSeason =}\NormalTok{ yearSeason }\OperatorTok{-}\StringTok{ }\DecValTok{1}\NormalTok{)}
+\NormalTok{        \}}
+
+      \KeywordTok{glimpse}\NormalTok{(df_table)}
+
+\NormalTok{        df_table <-}
+\StringTok{          }\NormalTok{df_table }\OperatorTok{%>%}
+\StringTok{          }\KeywordTok{.resolve.players}\NormalTok{(}\DataTypeTok{site =} \StringTok{"bref"}\NormalTok{)}
+
+        \KeywordTok{glimpse}\NormalTok{(df_table)}
+\CommentTok{# Removing brackets of next if Statement.  Checking if Table is not advanced first, then advanced after}
+
+  \CommentTok{# Save df_table for Advanced part of if statement}
+\NormalTok{        df_table_}\DecValTok{2}\NormalTok{ <-}\StringTok{ }\NormalTok{df_table}
+
+\NormalTok{          df_table <-}
+\StringTok{            }\NormalTok{df_table }\OperatorTok{%>%}
+\StringTok{            }\KeywordTok{gather_data}\NormalTok{(}
+              \DataTypeTok{numeric_ids =} \KeywordTok{c}\NormalTok{(}
+                \StringTok{"year"}\NormalTok{,}
+                \StringTok{"agePlayer"}\NormalTok{,}
+                \StringTok{"pct"}\NormalTok{,}
+                \StringTok{"countGames"}\NormalTok{,}
+                \StringTok{"ratio"}\NormalTok{,}
+                \StringTok{"idPlayer"}
+\NormalTok{              ),}
+              \DataTypeTok{use_logical_keys =} \OtherTok{TRUE}\NormalTok{,}
+              \DataTypeTok{use_factor_keys =}\NormalTok{ T,}
+              \DataTypeTok{use_date_keys =}\NormalTok{ F,}
+              \DataTypeTok{unite_columns =} \KeywordTok{list}\NormalTok{(}
+                \DataTypeTok{new_column =} \StringTok{"item"}\NormalTok{,}
+                \DataTypeTok{column_1 =} \StringTok{"item"}\NormalTok{,}
+                \DataTypeTok{column_2 =} \StringTok{"typeData"}\NormalTok{,}
+                \DataTypeTok{sep =} \StringTok{""}
+\NormalTok{              )}
+\NormalTok{            )}
+          \KeywordTok{glimpse}\NormalTok{(df_table)}
+          \KeywordTok{colnames}\NormalTok{(df_table)}
+
+          \CommentTok{# Col Order, place item, and value as last 2 columns based on columns in Character Vector}
+\NormalTok{          col_order <-}
+\StringTok{            }\KeywordTok{c}\NormalTok{(}\KeywordTok{names}\NormalTok{(df_table)[}\OperatorTok{!}\KeywordTok{names}\NormalTok{(df_table) }\OperatorTok{%>%}\StringTok{ }\KeywordTok{str_detect}\NormalTok{(}\StringTok{"value|item"}\NormalTok{)], }\StringTok{"item"}\NormalTok{, }\StringTok{"value"}\NormalTok{)}
+\NormalTok{          col_order}
+
+\NormalTok{          df_table <-}
+\StringTok{            }\NormalTok{df_table }\OperatorTok{%>%}
+\StringTok{            }\KeywordTok{select}\NormalTok{(}\KeywordTok{one_of}\NormalTok{(col_order))}
+          \KeywordTok{glimpse}\NormalTok{(df_table)}
+
+\CommentTok{# Advanced Portion of If}
+\NormalTok{          df_table_adv <-}
+\StringTok{            }\NormalTok{df_table_}\DecValTok{2} \OperatorTok{%>%}
+\StringTok{            }\KeywordTok{gather_data}\NormalTok{(}
+              \DataTypeTok{numeric_ids =} \KeywordTok{c}\NormalTok{(}\StringTok{"year"}\NormalTok{, }\StringTok{"agePlayer"}\NormalTok{, }\StringTok{"countGames"}\NormalTok{, }\StringTok{"id"}\NormalTok{),}
+              \DataTypeTok{use_logical_keys =} \OtherTok{TRUE}\NormalTok{,}
+              \DataTypeTok{use_factor_keys =}\NormalTok{ T,}
+              \DataTypeTok{use_date_keys =}\NormalTok{ F,}
+              \DataTypeTok{unite_columns =} \OtherTok{NULL}
+\NormalTok{            )}
+
+          \KeywordTok{glimpse}\NormalTok{(df_table_adv)}
+
+\NormalTok{          col_order_adv <-}
+\StringTok{            }\KeywordTok{c}\NormalTok{(}\KeywordTok{names}\NormalTok{(df_table_adv)[}\OperatorTok{!}\KeywordTok{names}\NormalTok{(df_table_adv) }\OperatorTok{%>%}\StringTok{ }\KeywordTok{str_detect}\NormalTok{(}\StringTok{"value|item"}\NormalTok{)], }\StringTok{"item"}\NormalTok{, }\StringTok{"value"}\NormalTok{)}
+\NormalTok{          col_order_adv}
+
+\NormalTok{          df_table_adv <-}
+\StringTok{            }\NormalTok{df_table_adv }\OperatorTok{%>%}
+\StringTok{            }\KeywordTok{select}\NormalTok{(}\KeywordTok{one_of}\NormalTok{(col_order_adv))}
+          \KeywordTok{glimpse}\NormalTok{(df_table_adv)}
+
+\NormalTok{        df_table <-}
+\StringTok{          }\NormalTok{df_table }\OperatorTok{%>%}
+\StringTok{          }\NormalTok{dplyr}\OperatorTok{::}\KeywordTok{select}\NormalTok{(}\OperatorTok{-}\KeywordTok{one_of}\NormalTok{(}\StringTok{"typeData"}\NormalTok{)) }\OperatorTok{%>%}
+\StringTok{          }\KeywordTok{suppressWarnings}\NormalTok{()}
+        \KeywordTok{glimpse}\NormalTok{(df_table)}
+
+        \ControlFlowTok{if}\NormalTok{ (df_table }\OperatorTok{%>%}\StringTok{ }\NormalTok{tibble}\OperatorTok{::}\KeywordTok{has_name}\NormalTok{(}\StringTok{"yearSeasonStart"}\NormalTok{)) \{}
+\NormalTok{          df_table <-}
+\StringTok{            }\NormalTok{df_table }\OperatorTok{%>%}
+\StringTok{            }\KeywordTok{rename}\NormalTok{(}\DataTypeTok{yearSeason =}\NormalTok{ yearSeasonStart) }\OperatorTok{%>%}
+\StringTok{            }\KeywordTok{mutate}\NormalTok{(}\DataTypeTok{yearSeason =}\NormalTok{ yearSeason }\OperatorTok{+}\StringTok{ }\DecValTok{1}\NormalTok{)}
+\NormalTok{        \}}
+
+\NormalTok{        widen_data =}\StringTok{ }\OtherTok{TRUE}
+        \ControlFlowTok{if}\NormalTok{ (widen_data)}
+\NormalTok{          df_table <-}
+\StringTok{            }\NormalTok{df_table }\OperatorTok{%>%}
+\StringTok{            }\KeywordTok{spread_data}\NormalTok{(}
+              \DataTypeTok{variable_name =} \StringTok{"item"}\NormalTok{,}
+              \DataTypeTok{value_name =} \StringTok{"value"}\NormalTok{,}
+              \DataTypeTok{perserve_order =} \OtherTok{TRUE}\NormalTok{,}
+              \DataTypeTok{unite_columns =} \OtherTok{NULL}\NormalTok{,}
+              \DataTypeTok{separate_columns =} \OtherTok{NULL}
+\NormalTok{            )}
+        \KeywordTok{glimpse}\NormalTok{(df_table)}
+
+        \ControlFlowTok{if}\NormalTok{ (df_table }\OperatorTok{%>%}\StringTok{ }\NormalTok{tibble}\OperatorTok{::}\KeywordTok{has_name}\NormalTok{(}\StringTok{"minutesAdvanced"}\NormalTok{)) \{}
+\NormalTok{          df_table <-}
+\StringTok{            }\NormalTok{df_table }\OperatorTok{%>%}
+\StringTok{            }\NormalTok{dplyr}\OperatorTok{::}\KeywordTok{rename}\NormalTok{(}\DataTypeTok{minutesTotals =}\NormalTok{ minutesAdvanced)}
+\NormalTok{        \}}
+
+        \ControlFlowTok{if}\NormalTok{ (assign_to_environment) \{}
+\NormalTok{          table_name <-}
+\StringTok{            }\NormalTok{glue}\OperatorTok{::}\KeywordTok{glue}\NormalTok{(}\StringTok{"dataBREFPlayer\{table\}"}\NormalTok{)}
+
+          \KeywordTok{assign}\NormalTok{(}\DataTypeTok{x =}\NormalTok{ table_name,}
+                 \DataTypeTok{value =} \KeywordTok{eval}\NormalTok{(df_table),}
+                 \DataTypeTok{envir =}\NormalTok{ .GlobalEnv)}
+\NormalTok{        \}}
+        \CommentTok{# Creates 2 column tibble}
+\NormalTok{        all_data <-}\StringTok{ }\KeywordTok{tibble}\NormalTok{(}\DataTypeTok{nameTable =}\NormalTok{ table, }\DataTypeTok{dataTable =} \KeywordTok{list}\NormalTok{(df_table))}
+
+\KeywordTok{glimpse}\NormalTok{(all_data)}
+
+\CommentTok{# Join Data is Yes}
+\NormalTok{join_data =}\StringTok{ }\OtherTok{TRUE}
+\NormalTok{Widen_data =}\StringTok{ }\OtherTok{TRUE}
+
+\NormalTok{        all_data <-}
+\StringTok{          }\NormalTok{all_data }\OperatorTok{%>%}
+\StringTok{          }\KeywordTok{select}\NormalTok{(dataTable) }\OperatorTok{%>%}
+\StringTok{          }\NormalTok{purrr}\OperatorTok{::}\KeywordTok{flatten}\NormalTok{() }\OperatorTok{%>%}
+\StringTok{          }\NormalTok{purrr}\OperatorTok{::}\KeywordTok{reduce}\NormalTok{(left_join) }\OperatorTok{%>%}
+\StringTok{          }\KeywordTok{suppressMessages}\NormalTok{() }\OperatorTok{%>%}
+\StringTok{          }\NormalTok{dplyr}\OperatorTok{::}\KeywordTok{select}\NormalTok{(yearSeason,}
+\NormalTok{                        slugSeason,}
+\NormalTok{                        namePlayer,}
+\NormalTok{                        slugPosition,}
+                        \KeywordTok{everything}\NormalTok{())}
+\CommentTok{# Else for Widen Data}
+\NormalTok{        widen_data =}\StringTok{ }\OtherTok{FALSE}
+\NormalTok{        all_data <-}
+\StringTok{          }\NormalTok{all_data }\OperatorTok{%>%}
+\StringTok{          }\NormalTok{purrr}\OperatorTok{::}\KeywordTok{reduce}\NormalTok{(bind_rows) }\OperatorTok{%>%}
+\StringTok{          }\KeywordTok{suppressMessages}\NormalTok{()}
+
+\NormalTok{        col_order <-}
+\StringTok{          }\KeywordTok{c}\NormalTok{(}\KeywordTok{names}\NormalTok{(all_data)[}\OperatorTok{!}\KeywordTok{names}\NormalTok{(all_data) }\OperatorTok{%>%}\StringTok{ }\KeywordTok{str_detect}\NormalTok{(}\StringTok{"value|item"}\NormalTok{)], }\StringTok{"item"}\NormalTok{, }\StringTok{"value"}\NormalTok{)}
+
+\NormalTok{        all_data <-}
+\StringTok{          }\NormalTok{all_data }\OperatorTok{%>%}
+\StringTok{          }\KeywordTok{select}\NormalTok{(}\KeywordTok{one_of}\NormalTok{(col_order))}
+      \ErrorTok{\}}
+
+\NormalTok{      all_data <-}
+\StringTok{        }\NormalTok{all_data }\OperatorTok{%>%}
+\StringTok{        }\KeywordTok{mutate}\NormalTok{(}
+          \DataTypeTok{groupPosition =} \KeywordTok{ifelse}\NormalTok{(}
+\NormalTok{            slugPosition }\OperatorTok{%>%}\StringTok{ }\KeywordTok{nchar}\NormalTok{() }\OperatorTok{==}\StringTok{ }\DecValTok{1}\NormalTok{,}
+\NormalTok{            slugPosition,}
+\NormalTok{            slugPosition }\OperatorTok{%>%}\StringTok{ }\KeywordTok{substr}\NormalTok{(}\DecValTok{2}\NormalTok{, }\DecValTok{2}\NormalTok{)}
+\NormalTok{          ),}
+          \DataTypeTok{isHOFPlayer =} \KeywordTok{ifelse}\NormalTok{(isHOFPlayer }\OperatorTok{%>%}\StringTok{ }\KeywordTok{is.na}\NormalTok{(), }\OtherTok{FALSE}\NormalTok{, isHOFPlayer)}
+\NormalTok{        ) }\OperatorTok{%>%}
+\StringTok{        }\KeywordTok{mutate}\NormalTok{(}\DataTypeTok{groupPosition =} \KeywordTok{ifelse}\NormalTok{(groupPosition }\OperatorTok{==}\StringTok{ "-"}\NormalTok{,}
+                                      \KeywordTok{substr}\NormalTok{(slugPosition, }\DecValTok{1}\NormalTok{, }\DecValTok{1}\NormalTok{),}
+\NormalTok{                                      groupPosition)) }\OperatorTok{%>%}
+\StringTok{        }\NormalTok{dplyr}\OperatorTok{::}\KeywordTok{select}\NormalTok{(slugSeason}\OperatorTok{:}\NormalTok{namePlayer, groupPosition, }\KeywordTok{everything}\NormalTok{())}
+
+      \ControlFlowTok{if}\NormalTok{ (include_all_nba) \{}
+\NormalTok{        df_all_nba <-}
+\StringTok{          }\KeywordTok{all_nba_teams}\NormalTok{(}\DataTypeTok{return_message =}\NormalTok{ F)}
+
+\NormalTok{        all_data <-}
+\StringTok{          }\NormalTok{all_data }\OperatorTok{%>%}
+\StringTok{          }\KeywordTok{left_join}\NormalTok{(}
+\NormalTok{            df_all_nba }\OperatorTok{%>%}
+\StringTok{              }\NormalTok{dplyr}\OperatorTok{::}\KeywordTok{select}\NormalTok{(}
+\NormalTok{              slugPlayerSeason,}
+\NormalTok{              slugSeason,}
+\NormalTok{              groupAllNBA,}
+\NormalTok{              numberAllNBATeam,}
+\NormalTok{              isAllNBA}\OperatorTok{:}\NormalTok{isAllNBA3}
+\NormalTok{            )}
+\NormalTok{          ) }\OperatorTok{%>%}
+\StringTok{          }\KeywordTok{distinct}\NormalTok{() }\OperatorTok{%>%}
+\StringTok{          }\KeywordTok{suppressMessages}\NormalTok{()}
+
+\NormalTok{        all_data <-}
+\StringTok{          }\NormalTok{all_data }\OperatorTok{%>%}
+\StringTok{          }\NormalTok{tidyr}\OperatorTok{::}\KeywordTok{replace_na}\NormalTok{(}
+            \KeywordTok{list}\NormalTok{(}
+              \DataTypeTok{numberAllNBATeam =} \DecValTok{0}\NormalTok{,}
+              \DataTypeTok{isAllNBA =} \OtherTok{FALSE}\NormalTok{,}
+              \DataTypeTok{isAllNBA1 =} \OtherTok{FALSE}\NormalTok{,}
+              \DataTypeTok{isAllNBA2 =} \OtherTok{FALSE}\NormalTok{,}
+              \DataTypeTok{isAllNBA3 =} \OtherTok{FALSE}
+\NormalTok{            )}
+\NormalTok{          )}
+
+\NormalTok{        all_data <-}\StringTok{ }\NormalTok{all_data }\OperatorTok{%>%}
+\StringTok{          }\KeywordTok{mutate}\NormalTok{(}\DataTypeTok{groupAllNBA =} \KeywordTok{case_when}\NormalTok{(}
+            \KeywordTok{is.na}\NormalTok{(groupAllNBA) }\OperatorTok{&}\StringTok{ }\OperatorTok{!}\NormalTok{isSeasonCurrent }\OperatorTok{~}\StringTok{ "None"}\NormalTok{,}
+            \KeywordTok{is.na}\NormalTok{(groupAllNBA) }\OperatorTok{&}\StringTok{ }\NormalTok{isSeasonCurrent }\OperatorTok{~}\StringTok{ }\OtherTok{NA_character_}\NormalTok{,}
+            \OtherTok{TRUE} \OperatorTok{~}\StringTok{ }\NormalTok{groupAllNBA}
+\NormalTok{          ))}
+\NormalTok{      \}}
+
+\NormalTok{      all_data <-}
+\StringTok{        }\NormalTok{all_data }\OperatorTok{%>%}
+\StringTok{        }\KeywordTok{mutate}\NormalTok{(}
+          \DataTypeTok{urlPlayerBREF =} \KeywordTok{list}\NormalTok{(}
+            \StringTok{'http://www.basketball-reference.com/players/'}\NormalTok{,}
+\NormalTok{            slugPlayerBREF }\OperatorTok{%>%}\StringTok{ }\KeywordTok{substr}\NormalTok{(}\DataTypeTok{start =} \DecValTok{1}\NormalTok{, }\DataTypeTok{stop =} \DecValTok{1}\NormalTok{),}
+            \StringTok{'/'}\NormalTok{,}
+\NormalTok{            slugPlayerBREF,}
+            \StringTok{'.html'}
+\NormalTok{          ) }\OperatorTok{%>%}\StringTok{ }\NormalTok{purrr}\OperatorTok{::}\KeywordTok{reduce}\NormalTok{(paste0)}
+\NormalTok{        )}
+
+\NormalTok{      all_data <-}
+\StringTok{        }\NormalTok{all_data }\OperatorTok{%>%}
+\StringTok{        }\KeywordTok{mutate_if}\NormalTok{(is.numeric,}
+          \KeywordTok{list}\NormalTok{(}\ControlFlowTok{function}\NormalTok{(x)\{}\KeywordTok{ifelse}\NormalTok{(}\KeywordTok{is.na}\NormalTok{(x), }\DecValTok{0}\NormalTok{, x)\}))}
+    \ErrorTok{\}}
+\NormalTok{    all_data}
+  \ErrorTok{\})}
+\end{Highlighting}
+\end{Shaded}
+
+
+\end{document}

@@ -1066,11 +1066,482 @@ get_bref_name_df <- function() {
     )
   })
 
+#' Assign nested BREF data to environment
+#'
+#' @param data a \code{tibble} of tables
+#' @param type type of BREF data are `teams` and `players`
+#' @param widen_data if \code{TRUE} widens data
+#' @param join_data if \code{TRUE} joins tables
+#' @param nest_data if \code{TRUE} nests data
+#' @param assign_to_environment if \code{TRUE} assigns data to your environment
+#' @param include_all_nba if `TRUE` include all NBA teams
+#'
+#' @return a `tibble`
+#' @export
+#' @import dplyr purrr stringr tibble tidyr
+#' @examples
+assign_bref_data <-
+  memoise::memoise(function(data,
+                            type = "Players",
+                            widen_data = TRUE,
+                            include_all_nba = F,
+                            join_data = TRUE,
+                            nest_data = FALSE,
+                            assign_to_environment = TRUE) {
+    type_slug <-
+      type %>% str_to_lower()
+
+    if (!type_slug %in% c('players', 'teams')) {
+      stop("Type can only be players or teams")
+    }
+
+    if (type_slug == "players") {
+      data <-
+        .assign.bref.players(
+          all_data = data,
+          widen_data = widen_data,
+          join_data = join_data,
+          include_all_nba = include_all_nba,
+          assign_to_environment = assign_to_environment
+        )
+    }
+
+    if (type_slug == "teams") {
+      data <-
+        .assign.bref.teams(
+          all_data = data,
+          widen_data = widen_data,
+          join_data = join_data,
+          assign_to_environment = assign_to_environment
+        )
+    }
+
+    if (nest_data) {
+      if (data %>% tibble::has_name("slugSeason")) {
+        data <-
+          data %>%
+          mutate(typeBREFData = type) %>%
+          nest(-c(slugSeason, typeBREFData, yearSeason), .key = dataSeason)
+      }
+    }
+    data
+  })
+
+.assign.bref.players <-
+  memoise::memoise(function(all_data,
+                            widen_data = TRUE,
+                            join_data = T,
+                            include_all_nba = T,
+                            assign_to_environment = TRUE) {
+    if (!all_data %>% tibble::has_name("typeData")) {
+      return(all_data)
+    }
+
+    table_names <-
+      all_data %>% pull(typeData) %>% unique()
+
+    all_data <-
+      table_names %>%
+      map_df(function(table) {
+        table %>% cat(fill = T)
+        df_table <-
+          all_data %>%
+          filter(typeData == table) %>%
+          unnest()
+
+        if (df_table %>% tibble::has_name("yearSeason")) {
+          df_table <-
+            df_table %>%
+            mutate(yearSeason = yearSeason - 1)
+        }
+
+        df_table <-
+          df_table %>%
+          .resolve.players(site = "bref")
+
+        if (!table == "Advanced") {
+          df_table <-
+            df_table %>%
+            gather_data(
+              numeric_ids = c(
+                "year",
+                "agePlayer",
+                "pct",
+                "countGames",
+                "ratio",
+                "idPlayer"
+              ),
+              use_logical_keys = TRUE,
+              use_factor_keys = T,
+              use_date_keys = F,
+              unite_columns = list(
+                new_column = "item",
+                column_1 = "item",
+                column_2 = "typeData",
+                sep = ""
+              )
+            )
+          col_order <-
+            c(names(df_table)[!names(df_table) %>% str_detect("value|item")], "item", "value")
+
+          df_table <-
+            df_table %>%
+            select(one_of(col_order))
+        } else {
+          df_table <-
+            df_table %>%
+            gather_data(
+              numeric_ids = c("year", "agePlayer", "countGames", "id"),
+              use_logical_keys = TRUE,
+              use_factor_keys = T,
+              use_date_keys = F,
+              unite_columns = NULL
+            )
 
 
+          col_order <-
+            c(names(df_table)[!names(df_table) %>% str_detect("value|item")], "item", "value")
+
+          df_table <-
+            df_table %>%
+            select(one_of(col_order))
+        }
+
+        df_table <-
+          df_table %>%
+          dplyr::select(-one_of("typeData")) %>%
+          suppressWarnings()
+
+        if (df_table %>% tibble::has_name("yearSeasonStart")) {
+          df_table <-
+            df_table %>%
+            rename(yearSeason = yearSeasonStart) %>%
+            mutate(yearSeason = yearSeason + 1)
+        }
+
+        if (widen_data) {
+          df_table <-
+            df_table %>%
+            spread_data(
+              variable_name = "item",
+              value_name = "value",
+              perserve_order = TRUE,
+              unite_columns = NULL,
+              separate_columns = NULL
+            )
+        }
+
+        if (df_table %>% tibble::has_name("minutesAdvanced")) {
+          df_table <-
+            df_table %>%
+            dplyr::rename(minutesTotals = minutesAdvanced)
+        }
+
+        if (assign_to_environment) {
+          table_name <-
+            glue::glue("dataBREFPlayer{table}")
+
+          assign(x = table_name,
+                 value = eval(df_table),
+                 envir = .GlobalEnv)
+        }
+        tibble(nameTable = table, dataTable = list(df_table))
+      }) %>%
+      suppressMessages()
+
+    if (join_data) {
+      if (widen_data) {
+        all_data <-
+          all_data %>%
+          select(dataTable) %>%
+          purrr::flatten() %>%
+          purrr::reduce(left_join) %>%
+          suppressMessages() %>%
+          dplyr::select(yearSeason,
+                        slugSeason,
+                        namePlayer,
+                        slugPosition,
+                        everything())
+      }  else {
+        all_data <-
+          all_data %>%
+          purrr::reduce(bind_rows) %>%
+          suppressMessages()
+
+        col_order <-
+          c(names(all_data)[!names(all_data) %>% str_detect("value|item")], "item", "value")
+
+        all_data <-
+          all_data %>%
+          select(one_of(col_order))
+      }
+
+      all_data <-
+        all_data %>%
+        mutate(
+          groupPosition = ifelse(
+            slugPosition %>% nchar() == 1,
+            slugPosition,
+            slugPosition %>% substr(2, 2)
+          ),
+          isHOFPlayer = ifelse(isHOFPlayer %>% is.na(), FALSE, isHOFPlayer)
+        ) %>%
+        mutate(groupPosition = ifelse(groupPosition == "-",
+                                      substr(slugPosition, 1, 1),
+                                      groupPosition)) %>%
+        dplyr::select(slugSeason:namePlayer, groupPosition, everything())
+
+      if (include_all_nba) {
+        df_all_nba <-
+          all_nba_teams(return_message = F)
+
+        all_data <-
+          all_data %>%
+          left_join(
+            df_all_nba %>%
+              dplyr::select(
+                slugPlayerSeason,
+                slugSeason,
+                groupAllNBA,
+                numberAllNBATeam,
+                isAllNBA:isAllNBA3
+              )
+          ) %>%
+          distinct() %>%
+          suppressMessages()
+
+        all_data <-
+          all_data %>%
+          tidyr::replace_na(
+            list(
+              numberAllNBATeam = 0,
+              isAllNBA = FALSE,
+              isAllNBA1 = FALSE,
+              isAllNBA2 = FALSE,
+              isAllNBA3 = FALSE
+            )
+          )
+
+        all_data <- all_data %>%
+          mutate(groupAllNBA = case_when(
+            is.na(groupAllNBA) & !isSeasonCurrent ~ "None",
+            is.na(groupAllNBA) & isSeasonCurrent ~ NA_character_,
+            TRUE ~ groupAllNBA
+          ))
+      }
+
+      all_data <-
+        all_data %>%
+        mutate(
+          urlPlayerBREF = list(
+            'http://www.basketball-reference.com/players/',
+            slugPlayerBREF %>% substr(start = 1, stop = 1),
+            '/',
+            slugPlayerBREF,
+            '.html'
+          ) %>% purrr::reduce(paste0)
+        )
+
+      all_data <-
+        all_data %>%
+        mutate_if(is.numeric,
+                  list(function(x){ifelse(is.na(x), 0, x)}))
+    }
+    all_data
+  })
+
+#' Gather a data frame
+#'
+#' @param data a \code{tibble}
+#' @param numeric_ids vector of numeric ids
+#' @param use_logical_keys if \code{TRUE} uses logicals as keys
+#' @param use_factor_keys if \code{TRUE} uses factors as a key
+#' @param use_date_keys if \code{TRUE} uses dates as a key
+#' @param variable_name variable column name
+#' @param unite_columns if not \code{NULL} \code{list} \itemize{
+#' \item new_column : new column name
+#' \item column_1 : first column to unite
+#' \item column_2 : second column to unite
+#' \item sep : separator
+#' }
+#' @param separate_columns if not \code{NULL} \code{list} \itemize{
+#' \item column : column to separate
+#' \item new_column_1 : new_column 1
+#' \item new_column_2 : new_column 2
+#' \item sep : separator
+#' }
+#' @param unite_columns if not \code{NULL} \code{list} \itemize{
+#' \item new_column : new column name
+#' \item column_1 : first column to unite
+#' \item column_2 : second column to unite
+#' \item sep : separator
+#' }
+#' @param separate_columns if not \code{NULL} \code{list} \itemize{
+#' \item column : column to separate
+#' \item new_column_1 : new_column 1
+#' \item new_column_2 : new_column 2
+#' \item sep : separator
+#' }
+#' @param remove_na removes NA columns
+#' @return a \code{tibble}
+#' @export
+#' @import dplyr stringr
+#' @importFrom rlang UQ
+#' @importFrom tidyr gather
+#' @importFrom purrr is_null
+#' @examples
+gather_data <-
+  function(data,
+           variable_name = 'item',
+           numeric_ids = c("^id"),
+           use_logical_keys = TRUE,
+           use_factor_keys = TRUE,
+           unite_columns = NULL,
+           separate_columns = NULL,
+           use_date_keys = FALSE,
+           remove_na = TRUE) {
+
+    gather_cols <- c()
+
+    char_names <-
+      data %>% select_if(is.character) %>% names()
+
+    gather_cols <-
+      gather_cols %>% append(char_names)
 
 
+    if (!numeric_ids %>% purrr::is_null()){
+      numeric_names <-
+        numeric_ids %>% str_c(collapse = "|")
+      base_numerics <-
+        data %>% dplyr::select(dplyr::matches(numeric_names)) %>% names()
 
+      gather_cols <-
+        base_numerics %>%
+        append(gather_cols)
+    }
+
+    use_logical <- data %>% get_data_classes() %>% filter(class == "logical") %>% nrow() > 0 && use_logical_keys
+
+    if (use_logical) {
+      logical_cols <-
+        data %>% select_if(is.logical) %>% names()
+
+      gather_cols <-
+        gather_cols %>%
+        append(logical_cols)
+    }
+
+    use_factor <- data %>% get_data_classes() %>% filter(class %>%  str_detect("factor")) %>% nrow() > 0 && use_factor_keys
+
+    if (use_factor) {
+      factor_cols <-
+        data %>% select_if(is.factor) %>% names()
+
+      gather_cols <-
+        gather_cols %>%
+        append(factor_cols)
+    }
+
+    use_date <- data %>% get_data_classes() %>% filter(class %>%  str_detect("date")) %>% nrow() > 0 && use_date_keys
+
+    if (use_date) {
+      date_cols <-
+        data %>% get_data_classes() %>% filter(class %>% str_detect("date")) %>% pull(column)
+
+      gather_cols <-
+        gather_cols %>%
+        append(factor_cols)
+    }
+
+
+    data <-
+      data %>%
+      gather(UQ(variable_name), value, -gather_cols)
+
+    if (!unite_columns %>% purrr::is_null()) {
+      df_unite <- unite_columns %>% flatten_df()
+      data <-
+        data %>%
+        unite(col = UQ(df_unite$new_column), df_unite$column_1, df_unite$column_2, sep = df_unite$sep) %>%
+        suppressWarnings()
+    }
+
+    if (!separate_columns %>% purrr::is_null()) {
+      df_sep <-
+        separate_columns %>% flatten_df()
+      data <-
+        data %>%
+        separate(col = UQ(df_sep$column), into = c(df_sep$new_column_1, df_sep$new_column_2), sep = df_sep$sep) %>%
+        suppressWarnings()
+    }
+
+    if (remove_na) {
+      data <-
+        data %>%
+        filter(!value %>% is.na())
+    }
+
+
+    data
+  }
+
+get_data_classes <- function(data) {
+  df_classes <-
+    data %>%
+    future_map(class) %>%
+    as_tibble() %>%
+    gather(column,class) %>%
+    mutate(idColumn = 1:n()) %>%
+    select(idColumn, everything()) %>%
+    mutate(isNested = class %>% str_detect("list|data.frame|tbl|tibble|data"))
+  has_nested <- df_classes %>% filter(isNested) %>% nrow() >0
+
+  if (has_nested) {
+    nested_cols <- df_classes %>% filter(isNested) %>% pull(idColumn)
+
+    df_nested_cols <-
+      nested_cols %>%
+      future_map_dfr(function(x) {
+        df_wide <- data %>%
+          select(x) %>%
+          purrr::set_names("listColumn") %>%
+          mutate(nrow = listColumn %>% map_dbl(length)) %>%
+          count(countZero = nrow == 0) %>%
+          mutate(pctZero = n /sum(n),
+                 idColumn = x) %>%
+          select(idColumn, everything()) %>%
+          gather(item, value, -c(idColumn, countZero)) %>%
+          unite(item, item, countZero, sep = "") %>%
+          spread(item, value)
+
+        if (df_wide %>% tibble::has_name("pctZeroTRUE")) {
+          df_wide <-
+            df_wide %>%
+            mutate(removeColumn = if_else(pctZeroTRUE == 1, TRUE, FALSE),
+                   isMessedList = if_else(pctZeroTRUE > 0 && !pctZeroTRUE == 1, T, F)
+            )
+        } else {
+          df_wide <-
+            df_wide %>%
+            mutate(removeColumn = F,
+                   isMessedList = F)
+        }
+
+      })
+
+    df_classes <-
+      df_classes %>%
+      left_join(df_nested_cols) %>%
+      mutate_if(is_logical,
+                funs(ifelse(. %>% is.na(), FALSE, .))) %>%
+      mutate_if(is_double,
+                funs(ifelse(. %>% is.na(), 0, .))) %>%
+      suppressMessages()
+  }
+
+  df_classes
+}
 
 
 # ---- NBA.com ----
